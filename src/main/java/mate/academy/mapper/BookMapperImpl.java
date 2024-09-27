@@ -31,6 +31,4 @@ public class BookMapperImpl implements BookMapper {
         book.setCoverImage(requestDto.getCoverImage());
         return book;
     }
-
-
 }

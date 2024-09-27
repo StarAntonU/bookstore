@@ -3,11 +3,11 @@ package mate.academy.repository.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.model.Book;
 import mate.academy.repository.BookRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Repository
