@@ -1,0 +1,21 @@
+package mate.academy.repository.book;
+
+import mate.academy.model.Book;
+import mate.academy.repository.SpecificationProvider;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
+import java.util.Arrays;
+
+@Component
+public class TitleSpecificationProvider implements SpecificationProvider<Book> {
+    private final String TITLE = "title";
+    @Override
+    public String getKey() {
+        return TITLE;
+    }
+
+    @Override
+    public Specification<Book> getSpecification(String[] params) {
+        return (root, query, criteriaBuilder) -> root.get(TITLE).in(Arrays.stream(params).toArray());
+    }
+}
