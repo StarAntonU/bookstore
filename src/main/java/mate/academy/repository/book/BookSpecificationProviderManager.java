@@ -1,4 +1,4 @@
-package mate.academy.repository.impl;
+package mate.academy.repository.book;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SpecificationProviderManagerImpl implements SpecificationProviderManager<Book> {
+public class BookSpecificationProviderManager implements SpecificationProviderManager<Book> {
     private final List<SpecificationProvider<Book>> bookSpecificationProviders;
 
     @Override

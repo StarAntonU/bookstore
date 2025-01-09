@@ -1,10 +1,10 @@
-package mate.academy.repository;
+package mate.academy.repository.book;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dto.BookSearchParametersDto;
 import mate.academy.model.Book;
+import mate.academy.repository.SpecificationBuilder;
+import mate.academy.repository.SpecificationProviderManager;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class BookSpecificationBuilder implements SpecificationBuilder<Book> {
     private static final String TITLE = "title";
     private static final String AUTHOR = "author";
-    private static final String PRICE = "price";
+    private static final String ISBN = "isbn";
     private final SpecificationProviderManager<Book> bookSpecificationProviderManager;
 
     @Override
@@ -27,12 +27,9 @@ public class BookSpecificationBuilder implements SpecificationBuilder<Book> {
             spec = spec.and(bookSpecificationProviderManager.getSpecificationProvider(AUTHOR)
                     .getSpecification(searchParameters.author()));
         }
-        if (searchParameters.price() != null && searchParameters.price().length > 0) {
-            spec = spec.and(bookSpecificationProviderManager.getSpecificationProvider(PRICE)
-                    .getSpecification((String[]) Arrays.stream(
-                            searchParameters.price())
-                    .map(BigDecimal::toPlainString)
-                            .toArray()));
+        if (searchParameters.isbn() != null && searchParameters.isbn().length > 0) {
+            spec = spec.and(bookSpecificationProviderManager.getSpecificationProvider(ISBN)
+                    .getSpecification(searchParameters.isbn()));
         }
         return spec;
     }

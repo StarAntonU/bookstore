@@ -1,4 +1,4 @@
-package mate.academy.repository.book;
+package mate.academy.repository.book.spec;
 
 import java.util.Arrays;
 import mate.academy.model.Book;
@@ -7,17 +7,17 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TitleSpecificationProvider implements SpecificationProvider<Book> {
-    private static final String TITLE = "title";
+public class IsbnSpecificationProvider implements SpecificationProvider<Book> {
+    private static final String ISBN = "isbn";
 
     @Override
     public String getKey() {
-        return TITLE;
+        return ISBN;
     }
 
     @Override
     public Specification<Book> getSpecification(String[] params) {
         return (root, query, criteriaBuilder)
-                -> root.get(TITLE).in(Arrays.stream(params).toArray());
+                -> root.get(ISBN).in(Arrays.stream(params).toArray());
     }
 }
