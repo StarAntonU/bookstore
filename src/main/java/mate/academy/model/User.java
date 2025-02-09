@@ -27,10 +27,11 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
+    @Column(name = "first_name",nullable = false)
     private String firstName;
-    @Column(nullable = false)
+    @Column(name = "last_name",nullable = false)
     private String lastName;
+    @Column(name = "shipping_address")
     private String shippingAddress;
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
