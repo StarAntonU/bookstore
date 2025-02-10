@@ -4,7 +4,7 @@ public record UserResponseDto(
         Long id,
         String email,
         String firstName,
-        String secondName,
+        String lastName,
         String shippingAddress
 ) {
 }
