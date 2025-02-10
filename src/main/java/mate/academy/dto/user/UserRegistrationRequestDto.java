@@ -4,9 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import mate.academy.annotation.FieldMatch;
 
 @Data
-//@FieldMatch(first = "password", second = "repeatPassword")
+@FieldMatch(firstPassName = "password", secondPassName = "repeatPassword")
 public class UserRegistrationRequestDto {
     @Email
     @NotBlank

@@ -6,7 +6,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -14,15 +13,16 @@ import java.lang.annotation.Target;
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
 public @interface FieldMatch {
-    String message() default "The fields must match";
+    String message() default "The password must match";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-    String first();
-    String second();
 
-    @Target({TYPE, ANNOTATION_TYPE})
+    String firstPassName();
+
+    String secondPassName();
+
+    @Target({TYPE})
     @Retention(RUNTIME)
-    @Documented
     @interface List {
         FieldMatch[] value();
     }
