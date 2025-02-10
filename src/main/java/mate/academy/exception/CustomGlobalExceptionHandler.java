@@ -26,6 +26,14 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .body(exception.getMessage());
     }
 
+    @ExceptionHandler({RegistrationException.class})
+    public ResponseEntity<Object> handlerRegistrationException(
+            RegistrationException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(exception.getMessage());
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
