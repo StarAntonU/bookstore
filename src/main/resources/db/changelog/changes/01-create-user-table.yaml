@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: create-user-table
-      author: mateacademy
+      author: BookStore
       changes:
         - createTable:
             tableName: users
@@ -26,17 +26,17 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: first_name
-                  type: varchar(255)
+                  type: varchar(64)
                   constraints:
                     nullable: false
               - column:
                   name: last_name
-                  type: varchar(255)
+                  type: varchar(64)
                   constraints:
                     nullable: false
               - column:
                   name: shipping_address
-                  type: varchar(255)
+                  type: varchar(100)
               - column:
                   name: is_deleted
                   type: bit
