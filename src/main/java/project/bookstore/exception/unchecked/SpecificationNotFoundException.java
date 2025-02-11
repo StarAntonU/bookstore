@@ -1,4 +1,4 @@
-package project.bookstore.exception;
+package project.bookstore.exception.unchecked;
 
 public class SpecificationNotFoundException extends RuntimeException {
     public SpecificationNotFoundException(String message) {

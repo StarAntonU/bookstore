@@ -1,9 +1,11 @@
 package project.bookstore.service.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import project.bookstore.dto.user.UserRegistrationRequestDto;
 import project.bookstore.dto.user.UserResponseDto;
+import project.bookstore.exception.checked.RegistrationException;
 import project.bookstore.mapper.UserMapper;
 import project.bookstore.model.User;
 import project.bookstore.repository.user.UserRepository;
@@ -16,8 +18,13 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserResponseDto register(UserRegistrationRequestDto requestDto) {
-        User user = userRepository.save(userMapper.toModel(requestDto));
-        return userMapper.toResponseDto(user);
+    public UserResponseDto register(UserRegistrationRequestDto requestDto)
+            throws RegistrationException {
+        Optional<User> user = userRepository.findByEmail(requestDto.getEmail());
+        if (user.isPresent()) {
+            throw new RegistrationException(
+                    String.format("User with email %s is exist", requestDto.getEmail()));
+        }
+        return userMapper.toResponseDto(userRepository.save(userMapper.toModel(requestDto)));
     }
 }

@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.bookstore.dto.user.UserRegistrationRequestDto;
 import project.bookstore.dto.user.UserResponseDto;
-import project.bookstore.exception.RegistrationException;
+import project.bookstore.exception.checked.RegistrationException;
 import project.bookstore.service.UserService;
 
-@Tag(name = "Book store", description = "Endpoints for register users")
+@Tag(name = "Users", description = "Endpoints for register users")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor

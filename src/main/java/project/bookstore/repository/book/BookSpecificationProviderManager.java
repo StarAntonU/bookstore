@@ -3,7 +3,7 @@ package project.bookstore.repository.book;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import project.bookstore.exception.SpecificationNotFoundException;
+import project.bookstore.exception.unchecked.SpecificationNotFoundException;
 import project.bookstore.model.Book;
 import project.bookstore.repository.SpecificationProvider;
 import project.bookstore.repository.SpecificationProviderManager;

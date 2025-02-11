@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import project.bookstore.dto.book.BookDto;
 import project.bookstore.dto.book.BookSearchParametersDto;
 import project.bookstore.dto.book.CreateBookRequestDto;
-import project.bookstore.exception.EntityNotFoundException;
+import project.bookstore.exception.unchecked.EntityNotFoundException;
 import project.bookstore.mapper.BookMapper;
 import project.bookstore.model.Book;
 import project.bookstore.repository.book.BookRepository;
