@@ -7,7 +7,7 @@ import lombok.Data;
 import project.bookstore.annotation.FieldMatch;
 
 @Data
-@FieldMatch(firstPassName = "password", secondPassName = "repeatPassword")
+@FieldMatch(firstPassName = "password", secondPassName = "repeatedPassword")
 public class UserRegistrationRequestDto {
     @Email
     @NotBlank
@@ -17,7 +17,7 @@ public class UserRegistrationRequestDto {
     private String password;
     @NotBlank
     @Size(min = 4, max = 20)
-    private String repeatPassword;
+    private String repeatedPassword;
     @NotBlank
     @Size(min = 2, max = 64)
     private String firstName;
