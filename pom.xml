@@ -102,6 +102,7 @@
 			<artifactId>liquibase-core</artifactId>
 			<version>${liquibase.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-maven-plugin</artifactId>
