@@ -1,5 +1,6 @@
 package project.bookstore.service.impl;
 
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,6 @@ import project.bookstore.model.User;
 import project.bookstore.repository.role.RoleRepository;
 import project.bookstore.repository.user.UserRepository;
 import project.bookstore.service.UserService;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
