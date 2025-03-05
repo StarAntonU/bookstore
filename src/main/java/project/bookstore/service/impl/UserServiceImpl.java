@@ -7,9 +7,12 @@ import project.bookstore.dto.user.UserRegistrationRequestDto;
 import project.bookstore.dto.user.UserResponseDto;
 import project.bookstore.exception.checked.RegistrationException;
 import project.bookstore.mapper.UserMapper;
+import project.bookstore.model.Role;
 import project.bookstore.model.User;
+import project.bookstore.repository.role.RoleRepository;
 import project.bookstore.repository.user.UserRepository;
 import project.bookstore.service.UserService;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto)
@@ -24,6 +28,9 @@ public class UserServiceImpl implements UserService {
         checkedIfExistUser(requestDto);
         User user = userMapper.toModel(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        Role role = roleRepository.findRoleByName(Role.RoleName.USER)
+                .orElseThrow(() -> new RuntimeException("Cen`t find role " + Role.RoleName.USER));
+        user.setRoles(Set.of(role));
         return userMapper.toResponseDto(userRepository.save(user));
     }
 
