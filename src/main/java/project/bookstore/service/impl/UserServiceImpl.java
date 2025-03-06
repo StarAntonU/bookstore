@@ -4,6 +4,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.bookstore.dto.user.UserRegistrationRequestDto;
 import project.bookstore.dto.user.UserResponseDto;
 import project.bookstore.exception.checked.RegistrationException;
@@ -17,6 +18,7 @@ import project.bookstore.service.UserService;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto)
             throws RegistrationException {
-        checkedIfExistUser(requestDto);
+        checkIfUserExists(requestDto);
         User user = userMapper.toModel(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         Role role = roleRepository.findByRole(Role.RoleName.USER)
@@ -36,7 +38,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponseDto(userRepository.save(user));
     }
 
-    private void checkedIfExistUser(UserRegistrationRequestDto requestDto)
+    private void checkIfUserExists(UserRegistrationRequestDto requestDto)
             throws RegistrationException {
         if (userRepository.existsByEmail(requestDto.getEmail())) {
             throw new RegistrationException(
