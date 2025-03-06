@@ -1,38 +1,12 @@
 databaseChangeLog:
-  -changeSet:
-    id: insert-admin-to-users
-    author: Anton
-    changes:
-      - insert:
-          tableName: users
-          columns:
-            - column:
-                name: id
-                value: "1"
-            - column:
-                name: email
-                value: "Admin@Admin.com"
-            - column:
-                name: password
-                value: "$2a$10$ZJV6AjTHWpHlA1OxRm1CGukGr.nFnp8BGBlKJAx78VtB3mDRZQCE."
-            - column:
-                name: first_name
-                value: "Admin"
-            - column:
-                name: last_name
-                value: "Admin"
-            - column:
-                name: shipping_address
-                value: "store"
-            - column:
-                name: is_deleted
-                value: "0"
-      - insert:
-          tableName: users_roles
-          columns:
-            - column:
-                name: user_id
-                value: "1"
-            - column:
-                name: role_id
-                value: "1"
+  - changeSet:
+      id: insert-admin-to-users
+      author: Anton
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: "admin@mail.com" }
+              - column: { name: password, value: "$2a$10$ZJV6AjTHWpHlA1OxRm1CGukGr.nFnp8BGBlKJAx78VtB3mDRZQCE." } #1234
+              - column: { name: first_name, value: "Admin" }
+              - column: { name: last_name, value: "Admin" }
