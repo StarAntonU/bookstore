@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-book-table
+      id: create-books-table
       author: Anton
       changes:
         - createTable:
@@ -36,7 +36,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: description
-                  type: varchar(255)
+                  type: varchar(1000)
               - column:
                   name: cover_image
                   type: varchar(255)
