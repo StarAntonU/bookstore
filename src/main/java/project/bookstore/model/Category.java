@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -15,6 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +25,7 @@ public class Category {
     private String name;
     private String description;
 
+    public Category(Long id) {
+        this.id = id;
+    }
 }
