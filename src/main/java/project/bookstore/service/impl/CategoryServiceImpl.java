@@ -2,6 +2,7 @@ package project.bookstore.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.bookstore.dto.book.BookDtoWithoutCategoryIds;
@@ -28,10 +29,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> findAll(Pageable pageable) {
-        return categoryRepository.findAll(pageable).stream()
-                .map(categoryMapper::toDto)
-                .toList();
+    public Page<CategoryDto> findAll(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
     }
 
     @Override
@@ -53,15 +52,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteById(Long id) {
-        if (categoryRepository.existsById(id)) {
-            categoryRepository.deleteById(id);
-        } else {
+        if (!categoryRepository.existsById(id)) {
             throw new EntityNotFoundException("Can`t delete category by id " + id);
         }
+        categoryRepository.deleteById(id);
     }
 
     @Override
     public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(Long id) {
-        return bookRepository.findByCategories_Id(id);
+        return bookRepository.findByCategoriesId(id);
     }
 }

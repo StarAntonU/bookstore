@@ -7,5 +7,5 @@ import project.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import project.bookstore.model.Book;
 
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
-    List<BookDtoWithoutCategoryIds> findByCategories_Id(Long categoryId);
+    List<BookDtoWithoutCategoryIds> findByCategoriesId(Long categoryId);
 }
