@@ -15,8 +15,8 @@ import project.bookstore.repository.book.BookRepository;
 import project.bookstore.repository.book.BookSpecificationBuilder;
 import project.bookstore.service.BookService;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
@@ -48,17 +48,16 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can`t update book by id " + id)
         );
-        bookMapper.updateBookFromDto(requestDto, book);
+        bookMapper.updateBookFromDto(book, requestDto);
         return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override
     public void deleteById(Long id) {
-        if (bookRepository.existsById(id)) {
-            bookRepository.deleteById(id);
-        } else {
+        if (!bookRepository.existsById(id)) {
             throw new EntityNotFoundException("Can`t delete book by id " + id);
         }
+        bookRepository.deleteById(id);
     }
 
     @Override
