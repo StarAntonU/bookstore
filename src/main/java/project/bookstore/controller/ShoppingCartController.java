@@ -40,7 +40,8 @@ public class ShoppingCartController {
         return shoppingCartService.findAll(authentication);
     }
 
-    @Operation(summary = "update item", description = "update the quantity item in the shopping cart")
+    @Operation(summary = "update item",
+            description = "update the quantity item in the shopping cart")
     @PutMapping("/items/{cartItemId}")
     public ShoppingCartDto update(@PathVariable Long cartItemId,
                                   @RequestBody @Valid UpdateCartItemDto requestDto,
