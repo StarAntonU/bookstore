@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import project.bookstore.config.MapperConfig;
 import project.bookstore.dto.cartitem.CartItemDto;
 import project.bookstore.dto.cartitem.CreateCartItemRequestDto;
-import project.bookstore.dto.category.UpdateCartItemDto;
+import project.bookstore.dto.cartitem.UpdateCartItemDto;
 import project.bookstore.model.CartItem;
 
 @Mapper(config = MapperConfig.class, uses = BookMapper.class)

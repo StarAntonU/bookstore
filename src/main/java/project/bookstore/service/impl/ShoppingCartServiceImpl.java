@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.bookstore.dto.cartitem.CreateCartItemRequestDto;
-import project.bookstore.dto.category.UpdateCartItemDto;
+import project.bookstore.dto.cartitem.UpdateCartItemDto;
 import project.bookstore.dto.shoppingcart.ShoppingCartDto;
 import project.bookstore.exception.unchecked.EntityNotFoundException;
 import project.bookstore.mapper.CartItemMapper;

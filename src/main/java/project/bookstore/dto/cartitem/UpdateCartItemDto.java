@@ -1,4 +1,4 @@
-package project.bookstore.dto.category;
+package project.bookstore.dto.cartitem;
 
 import jakarta.validation.constraints.Positive;
 
