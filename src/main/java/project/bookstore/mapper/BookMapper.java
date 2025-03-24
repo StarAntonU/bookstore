@@ -1,15 +1,16 @@
 package project.bookstore.mapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import project.bookstore.config.MapperConfig;
 import project.bookstore.dto.book.BookDto;
-import project.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import project.bookstore.dto.book.CreateBookRequestDto;
 import project.bookstore.model.Book;
 import project.bookstore.model.Category;
@@ -41,5 +42,10 @@ public interface BookMapper {
         book.setCategories(categories);
     }
 
-    BookDtoWithoutCategoryIds toBookDtoWithoutCategoryIds(Book book);
+    @Named("bookFromId")
+    default Book bookFromId(Long id) {
+        return Optional.ofNullable(id)
+                .map(Book::new)
+                .orElse(null);
+    }
 }

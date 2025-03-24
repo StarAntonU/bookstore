@@ -40,9 +40,9 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(role));
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUser(user);
-        User savedUser = userRepository.save(user);
+        user = userRepository.save(user);
         shoppingCartRepository.save(shoppingCart);
-        return userMapper.toResponseDto(savedUser);
+        return userMapper.toResponseDto(user);
     }
 
     private void checkIfUserExists(UserRegistrationRequestDto requestDto)

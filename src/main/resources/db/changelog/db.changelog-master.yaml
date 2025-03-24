@@ -23,5 +23,3 @@ databaseChangeLog:
       file: db/changelog/changes/02-insert-admin-to-chopping_cart.yaml
   - include:
       file: db/changelog/changes/01-create-cart_items-table.yaml
-  - include:
-      file: db/changelog/changes/01-create-shopping_carts_cart_items-table.yaml

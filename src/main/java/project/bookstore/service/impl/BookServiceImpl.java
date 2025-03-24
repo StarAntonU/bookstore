@@ -13,6 +13,7 @@ import project.bookstore.mapper.BookMapper;
 import project.bookstore.model.Book;
 import project.bookstore.repository.book.BookRepository;
 import project.bookstore.repository.book.BookSpecificationBuilder;
+import project.bookstore.repository.category.CategoryRepository;
 import project.bookstore.service.BookService;
 
 @Service
@@ -21,9 +22,17 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final BookSpecificationBuilder bookSpecificationBuilder;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public BookDto save(CreateBookRequestDto requestDto) {
+        List<Long> listCategories = requestDto.getCategories().stream()
+                .filter(categoryRepository::existsById)
+                .toList();
+        if (listCategories.isEmpty()) {
+            throw new EntityNotFoundException("There categories are not exist "
+                    + requestDto.getCategories());
+        }
         Book book = bookRepository.save(bookMapper.toModel(requestDto));
         return bookMapper.toDto(book);
     }
