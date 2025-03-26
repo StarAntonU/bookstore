@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import project.bookstore.dto.cartitem.CreateCartItemRequestDto;
 import project.bookstore.dto.cartitem.UpdateCartItemDto;
 import project.bookstore.dto.shoppingcart.ShoppingCartDto;
+import project.bookstore.model.ShoppingCart;
 
 public interface ShoppingCartService {
     ShoppingCartDto addItem(CreateCartItemRequestDto requestDto, Authentication authentication);
@@ -15,4 +16,6 @@ public interface ShoppingCartService {
     ShoppingCartDto findAll(Authentication authentication);
 
     void delete(Long id);
+
+    ShoppingCart createNewShoppingCart();
 }

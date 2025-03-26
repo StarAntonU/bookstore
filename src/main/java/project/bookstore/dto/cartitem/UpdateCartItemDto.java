@@ -1,9 +1,12 @@
 package project.bookstore.dto.cartitem;
 
 import jakarta.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.Setter;
 
-public record UpdateCartItemDto(
-        @Positive
-        int quantity
-) {
+@Getter
+@Setter
+public class UpdateCartItemDto {
+    @Positive
+    private int quantity;
 }

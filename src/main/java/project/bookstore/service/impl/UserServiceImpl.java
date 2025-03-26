@@ -16,6 +16,7 @@ import project.bookstore.model.User;
 import project.bookstore.repository.role.RoleRepository;
 import project.bookstore.repository.shoppingcart.ShoppingCartRepository;
 import project.bookstore.repository.user.UserRepository;
+import project.bookstore.service.ShoppingCartService;
 import project.bookstore.service.UserService;
 
 @Service
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final ShoppingCartRepository shoppingCartRepository;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto)
@@ -38,7 +40,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Cen`t find role " + Role.RoleName.USER));
         user.setRoles(Set.of(role));
-        ShoppingCart shoppingCart = new ShoppingCart();
+        ShoppingCart shoppingCart = shoppingCartService.createNewShoppingCart();
         shoppingCart.setUser(user);
         user = userRepository.save(user);
         shoppingCartRepository.save(shoppingCart);

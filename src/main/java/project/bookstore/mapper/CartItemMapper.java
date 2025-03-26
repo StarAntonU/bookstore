@@ -10,7 +10,6 @@ import project.bookstore.model.CartItem;
 
 @Mapper(config = MapperConfig.class, uses = BookMapper.class)
 public interface CartItemMapper {
-    //@Mapping(target = "book", source = "bookId", qualifiedByName = "bookFromId")
     CartItem toModel(CreateCartItemRequestDto requestDto);
 
     @Mapping(target = "bookId", source = "book.id")
