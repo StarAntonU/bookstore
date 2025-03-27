@@ -1,5 +1,6 @@
 package project.bookstore.service.impl;
 
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -48,8 +49,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItem.setBook(bookRepository.findById(requestDto.bookId()).orElseThrow(
                 () -> new EntityNotFoundException("Can`t find book by id " + requestDto.bookId())
         ));
-        cartItemRepository.saveAndFlush(cartItem);
-        return shoppingCartMapper.toDto(shoppingCartRepository.findByUserId(userId));
+        CartItem savedCartItem = cartItemRepository.save(cartItem);
+        ShoppingCart shoppingCartFromDb = shoppingCartRepository.findByUserId(userId);
+        shoppingCartFromDb.setCartItems(Set.of(savedCartItem));
+        return shoppingCartMapper.toDto(shoppingCartFromDb);
     }
 
     @Override
@@ -61,7 +64,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 () -> new EntityNotFoundException("Can`t find cart item by id " + id)
         );
         cartItem.setQuantity(requestDto.getQuantity());
-        cartItemRepository.saveAndFlush(cartItem);
+        cartItemRepository.save(cartItem);
         return shoppingCartMapper.toDto(shoppingCartRepository.findByUserId(userId));
     }
 

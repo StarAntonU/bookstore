@@ -30,7 +30,7 @@ public class ShoppingCart {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id", nullable = false)
     private User user;
-    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
     private Set<CartItem> cartItems = new HashSet<>();
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
