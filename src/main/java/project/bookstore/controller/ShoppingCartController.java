@@ -36,8 +36,8 @@ public class ShoppingCartController {
 
     @Operation(summary = "view items", description = "view all items in the shopping cart")
     @GetMapping
-    public ShoppingCartDto findAll(Authentication authentication) {
-        return shoppingCartService.findAll(authentication);
+    public ShoppingCartDto getShoppingCart(Authentication authentication) {
+        return shoppingCartService.getShoppingCart(authentication);
     }
 
     @Operation(summary = "update item",

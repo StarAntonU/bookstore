@@ -40,8 +40,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Cen`t find role " + Role.RoleName.USER));
         user.setRoles(Set.of(role));
-        ShoppingCart shoppingCart = shoppingCartService.createNewShoppingCart();
-        shoppingCart.setUser(user);
+        ShoppingCart shoppingCart = shoppingCartService.createNewShoppingCart(user);
         user = userRepository.save(user);
         shoppingCartRepository.save(shoppingCart);
         return userMapper.toResponseDto(user);

@@ -48,7 +48,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItem.setBook(bookRepository.findById(requestDto.bookId()).orElseThrow(
                 () -> new EntityNotFoundException("Can`t find book by id " + requestDto.bookId())
         ));
-        cartItemRepository.save(cartItem);
+        cartItemRepository.saveAndFlush(cartItem);
         return shoppingCartMapper.toDto(shoppingCartRepository.findByUserId(userId));
     }
 
@@ -61,12 +61,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 () -> new EntityNotFoundException("Can`t find cart item by id " + id)
         );
         cartItem.setQuantity(requestDto.getQuantity());
-        cartItemRepository.save(cartItem);
+        cartItemRepository.saveAndFlush(cartItem);
         return shoppingCartMapper.toDto(shoppingCartRepository.findByUserId(userId));
     }
 
     @Override
-    public ShoppingCartDto findAll(Authentication authentication) {
+    public ShoppingCartDto getShoppingCart(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
         return shoppingCartMapper.toDto(shoppingCart);
@@ -80,8 +80,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItemRepository.deleteById(id);
     }
 
-    public ShoppingCart createNewShoppingCart() {
-        return new ShoppingCart();
+    public ShoppingCart createNewShoppingCart(User user) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
+        return shoppingCart;
     }
 
     private Long findUser(Authentication authentication) {
