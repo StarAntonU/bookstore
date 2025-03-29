@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-statuses-to-statuses
+      author: Anton
+      changes:
+        - insert:
+            tableName: statuses
+            columns:
+              - column: { name: status, value: "NEW" }
+        - insert:
+            tableName: statuses
+            columns:
+              - column: { name: status, value: "PAID" }
+        - insert:
+            tableName: statuses
+            columns:
+              - column: { name: status, value: "PACKED" }
+        - insert:
+            tableName: statuses
+            columns:
+              - column: { name: status, value: "IS_DELIVERED" }
+        - insert:
+            tableName: statuses
+            columns:
+              - column: { name: status, value: "DELIVERED" }
+        - insert:
+            tableName: statuses
+            columns:
+              - column: { name: status, value: "CANCELLED" }
