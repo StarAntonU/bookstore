@@ -3,11 +3,11 @@ package project.bookstore.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import project.bookstore.config.MapperConfig;
-import project.bookstore.dto.shoppingcart.ShoppingCartDto;
-import project.bookstore.model.ShoppingCart;
+import project.bookstore.dto.order.OrderResponseDto;
+import project.bookstore.model.Order;
 
 @Mapper(config = MapperConfig.class)
-public interface ShoppingCartMapper {
+public interface OrderMapper {
     @Mapping(target = "userId", source = "user.id")
-    ShoppingCartDto toDto(ShoppingCart shoppingCart);
+    OrderResponseDto toDto(Order order);
 }
