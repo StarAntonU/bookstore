@@ -1,13 +1,15 @@
 package project.bookstore.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.bookstore.dto.order.CreateOrderRequestDto;
-import project.bookstore.dto.order.OrderResponseDto;
+import project.bookstore.dto.order.OrderDto;
 import project.bookstore.service.OrderService;
 
 @RestController
@@ -17,8 +19,13 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public OrderResponseDto createOrder(
+    public OrderDto createOrder(
             @RequestBody CreateOrderRequestDto requestDto, Authentication authentication) {
         return orderService.createOrder(requestDto, authentication);
+    }
+
+    @GetMapping
+    public List<OrderDto> viewOrders(Authentication authentication) {
+        return orderService.viewOrders(authentication);
     }
 }

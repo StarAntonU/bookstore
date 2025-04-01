@@ -1,11 +1,12 @@
 package project.bookstore.dto.shoppingcart;
 
 import java.util.Set;
+import lombok.Data;
 import project.bookstore.dto.cartitem.CartItemDto;
 
-public record ShoppingCartDto(
-        Long id,
-        Long userId,
-        Set<CartItemDto> cartItems
-) {
+@Data
+public class ShoppingCartDto {
+    private Long id;
+    private Long userId;
+    private Set<CartItemDto> cartItems;
 }

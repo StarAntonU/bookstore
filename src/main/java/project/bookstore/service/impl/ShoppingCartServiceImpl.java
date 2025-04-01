@@ -1,5 +1,6 @@
 package project.bookstore.service.impl;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                                 + requestDto.quantity()),
                         () -> addCartItemToCart(requestDto, book, cart));
         shoppingCartRepository.save(cart);
-        return shoppingCartMapper.toDto(cart);
+        ShoppingCartDto dto = shoppingCartMapper.toDto(cart);
+        return addItemDtoToShoppingCart(dto, cart);
     }
 
     @Override
@@ -60,14 +62,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 }).orElseThrow(() -> new EntityNotFoundException(
                         "Can`t find cart item by id " + id));
         cartItemRepository.save(cartItem);
-        return shoppingCartMapper.toDto(cart);
+        ShoppingCartDto dto = shoppingCartMapper.toDto(cart);
+        return addItemDtoToShoppingCart(dto, cart);
     }
 
     @Override
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         Long userId = findUser(authentication);
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
-        return shoppingCartMapper.toDto(shoppingCart);
+        ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
+        ShoppingCartDto dto = shoppingCartMapper.toDto(cart);
+        return addItemDtoToShoppingCart(dto, cart);
     }
 
     @Override
@@ -83,6 +87,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUser(user);
         shoppingCartRepository.save(shoppingCart);
+    }
+
+    private ShoppingCartDto addItemDtoToShoppingCart(ShoppingCartDto cartDto, ShoppingCart cart) {
+        cartDto.setCartItems(cart.getCartItems()
+                .stream()
+                .map(cartItemMapper::toDto)
+                .collect(Collectors.toSet()));
+        return cartDto;
     }
 
     private Long findUser(Authentication authentication) {

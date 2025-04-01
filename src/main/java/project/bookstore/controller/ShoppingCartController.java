@@ -30,7 +30,7 @@ public class ShoppingCartController {
     @Operation(summary = "add item", description = "add the item to shopping cart")
     @PostMapping
     public ShoppingCartDto add(@RequestBody @Valid CreateCartItemRequestDto requestDto,
-                           Authentication authentication) {
+                               Authentication authentication) {
         return shoppingCartService.addItem(requestDto, authentication);
     }
 

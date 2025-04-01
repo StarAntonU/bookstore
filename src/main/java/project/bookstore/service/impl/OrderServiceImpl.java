@@ -4,11 +4,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import project.bookstore.dto.order.CreateOrderRequestDto;
-import project.bookstore.dto.order.OrderResponseDto;
+import project.bookstore.dto.order.OrderDto;
 import project.bookstore.exception.unchecked.DataProcessingException;
 import project.bookstore.exception.unchecked.EntityNotFoundException;
 import project.bookstore.mapper.OrderItemMapper;
@@ -19,7 +20,6 @@ import project.bookstore.model.ShoppingCart;
 import project.bookstore.model.Status;
 import project.bookstore.model.User;
 import project.bookstore.repository.order.OrderRepository;
-import project.bookstore.repository.orderitem.OrderItemRepository;
 import project.bookstore.repository.shoppingcart.ShoppingCartRepository;
 import project.bookstore.repository.status.StatusRepository;
 import project.bookstore.service.OrderService;
@@ -32,23 +32,39 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemMapper orderItemMapper;
     private final StatusRepository statusRepository;
     private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
 
     @Override
-    public OrderResponseDto createOrder(
+    public OrderDto createOrder(
             CreateOrderRequestDto requestDto, Authentication authentication) {
         User user = findUser(authentication);
         ShoppingCart cart = shoppingCartRepository.findByUserId(user.getId());
         final Order order = new Order();
         List<OrderItem> orderItems = cart.getCartItems()
                 .stream()
-                .map(orderItemMapper::toOrderItem)
+                .map(orderItemMapper::toModel)
                 .peek(o -> o.setId(null))
                 .peek(o -> o.setOrder(order))
                 .peek(order::addOrderItemToOrder)
                 .toList();
-        return orderMapper.toDto(
-                orderRepository.save(buildOrder(user, orderItems, requestDto, order)));
+        OrderDto orderResponseDto = orderMapper.toDto(orderRepository.save(
+                buildOrder(user, orderItems, requestDto, order)));
+        shoppingCartRepository.delete(cart);
+        cart.setDeleted(false);
+        shoppingCartRepository.save(cart);
+        return addOrderItemToOrderDto(orderResponseDto, orderItems);
+    }
+
+    @Override
+    public List<OrderDto> viewOrders(Authentication authentication) {
+        return null;
+    }
+
+    private OrderDto addOrderItemToOrderDto(OrderDto orderDto, List<OrderItem> orderItems) {
+        orderDto.setOrderItems(orderItems
+                .stream()
+                .map(orderItemMapper::toDto)
+                .collect(Collectors.toSet()));
+        return orderDto;
     }
 
     private User findUser(Authentication authentication) {
