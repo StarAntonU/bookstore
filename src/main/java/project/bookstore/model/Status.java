@@ -23,8 +23,8 @@ public class Status {
     @Enumerated(EnumType.STRING)
     private StatusName status;
 
-    public String getStatusName() {
-        return status.name();
+    public Status(StatusName status) {
+        this.status = status;
     }
 
     public enum StatusName {

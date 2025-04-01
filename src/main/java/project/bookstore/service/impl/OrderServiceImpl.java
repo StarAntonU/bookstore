@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -11,17 +12,16 @@ import org.springframework.stereotype.Service;
 import project.bookstore.dto.order.CreateOrderRequestDto;
 import project.bookstore.dto.order.OrderDto;
 import project.bookstore.exception.unchecked.DataProcessingException;
-import project.bookstore.exception.unchecked.EntityNotFoundException;
 import project.bookstore.mapper.OrderItemMapper;
 import project.bookstore.mapper.OrderMapper;
+import project.bookstore.model.CartItem;
 import project.bookstore.model.Order;
 import project.bookstore.model.OrderItem;
-import project.bookstore.model.ShoppingCart;
 import project.bookstore.model.Status;
 import project.bookstore.model.User;
 import project.bookstore.repository.order.OrderRepository;
+import project.bookstore.repository.orderitem.OrderItemRepository;
 import project.bookstore.repository.shoppingcart.ShoppingCartRepository;
-import project.bookstore.repository.status.StatusRepository;
 import project.bookstore.service.OrderService;
 
 @Service
@@ -30,33 +30,51 @@ public class OrderServiceImpl implements OrderService {
     private final ShoppingCartRepository shoppingCartRepository;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
-    private final StatusRepository statusRepository;
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
     @Override
     public OrderDto createOrder(
             CreateOrderRequestDto requestDto, Authentication authentication) {
         User user = findUser(authentication);
-        ShoppingCart cart = shoppingCartRepository.findByUserId(user.getId());
-        final Order order = new Order();
-        List<OrderItem> orderItems = cart.getCartItems()
-                .stream()
-                .map(orderItemMapper::toModel)
-                .peek(o -> o.setId(null))
-                .peek(o -> o.setOrder(order))
-                .peek(order::addOrderItemToOrder)
-                .toList();
-        OrderDto orderResponseDto = orderMapper.toDto(orderRepository.save(
-                buildOrder(user, orderItems, requestDto, order)));
-        shoppingCartRepository.delete(cart);
-        cart.setDeleted(false);
-        shoppingCartRepository.save(cart);
-        return addOrderItemToOrderDto(orderResponseDto, orderItems);
+        Set<CartItem> cartItems = shoppingCartRepository.findByUserId(user.getId()).getCartItems();
+        if (cartItems.isEmpty()) {
+            throw new DataProcessingException("Cart is empty");
+        }
+        Order order = new Order();
+        order.setUser(user);
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus(new Status(Status.StatusName.NEW));
+        order.setShippingAddress(requestDto.shippingAddress());
+        order.setOrderItems(createOrderItem(cartItems, order));
+        order.setTotal(countTotalPrice(order.getOrderItems()));
+        cartItems.clear();
+        return orderMapper.toDto(orderRepository.save(order));
     }
 
     @Override
     public List<OrderDto> viewOrders(Authentication authentication) {
         return null;
+    }
+
+    private Set<OrderItem> createOrderItem(Set<CartItem> cartItems, Order order) {
+        Set<OrderItem> orderItems = new HashSet<>();
+        for (CartItem cartItem : cartItems) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setBook(cartItem.getBook());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setPrice(cartItem.getBook().getPrice());
+            orderItem.setOrder(order);
+            orderItems.add(orderItem);
+            cartItem.setShoppingCart(null);
+        }
+        return orderItems;
+    }
+
+    private BigDecimal countTotalPrice(Set<OrderItem> orderItems) {
+        return orderItems.stream()
+                .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private OrderDto addOrderItemToOrderDto(OrderDto orderDto, List<OrderItem> orderItems) {
@@ -69,27 +87,5 @@ public class OrderServiceImpl implements OrderService {
 
     private User findUser(Authentication authentication) {
         return (User) authentication.getPrincipal();
-    }
-
-    private Order buildOrder(
-            User user, List<OrderItem> orderItem,
-            CreateOrderRequestDto requestDto, Order order) {
-        order.setUser(user);
-        Status status = statusRepository.findByStatus(Status.StatusName.NEW)
-                .orElseThrow(() -> new EntityNotFoundException("Can`t find status "
-                        + Status.StatusName.NEW));
-        order.setStatus(status);
-        order.setTotal(countTotalPrice(orderItem));
-        order.setOrderDate(LocalDateTime.now());
-        order.setOrderItems(new HashSet<>(orderItem));
-        order.setShippingAddress(requestDto.shippingAddress());
-        return order;
-    }
-
-    private BigDecimal countTotalPrice(List<OrderItem> orderItems) {
-        return orderItems.stream()
-                .map(o -> o.getPrice().multiply(new BigDecimal(o.getQuantity())))
-                .reduce(BigDecimal::add)
-                .orElseThrow(() -> new DataProcessingException("List order items is empty"));
     }
 }
