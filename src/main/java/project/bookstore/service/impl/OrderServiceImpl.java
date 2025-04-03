@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import project.bookstore.dto.order.CreateOrderRequestDto;
 import project.bookstore.dto.order.OrderDto;
+import project.bookstore.dto.orderitem.OrderItemDto;
 import project.bookstore.exception.unchecked.DataProcessingException;
 import project.bookstore.mapper.OrderItemMapper;
 import project.bookstore.mapper.OrderMapper;
@@ -53,7 +54,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> viewOrders(Authentication authentication) {
-        return null;
+        User user = findUser(authentication);
+        List<Order> orders = orderRepository.findByUserId(user.getId());
+        List<OrderDto> orderDtos = orders
+                .stream()
+                .map(orderMapper::toDto)
+                .toList();
+        for (OrderDto orderDto : orderDtos) {
+            List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderDto.getId());
+            orderDto.setOrderItems(changedOrderItToOrderItDto(orderItems));
+        }
+        return orderDtos;
+    }
+
+    private Set<OrderItemDto> changedOrderItToOrderItDto(List<OrderItem> orderItems) {
+        return orderItems
+                .stream()
+                .map(orderItemMapper::toDto)
+                .collect(Collectors.toSet());
     }
 
     private Set<OrderItem> createOrderItem(Set<CartItem> cartItems, Order order) {
@@ -65,7 +83,6 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setPrice(cartItem.getBook().getPrice());
             orderItem.setOrder(order);
             orderItems.add(orderItem);
-            cartItem.setShoppingCart(null);
         }
         return orderItems;
     }
