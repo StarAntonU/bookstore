@@ -11,8 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import project.bookstore.dto.order.CreateOrderRequestDto;
 import project.bookstore.dto.order.OrderDto;
+import project.bookstore.dto.order.PatchOrderDto;
 import project.bookstore.dto.orderitem.OrderItemDto;
 import project.bookstore.exception.unchecked.DataProcessingException;
+import project.bookstore.exception.unchecked.EntityNotFoundException;
 import project.bookstore.mapper.OrderItemMapper;
 import project.bookstore.mapper.OrderMapper;
 import project.bookstore.model.CartItem;
@@ -46,10 +48,13 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(Order.Status.NEW);
         order.setShippingAddress(requestDto.shippingAddress());
-        order.setOrderItems(createOrderItem(cartItems, order));
+        Set<OrderItem> orderItem = createOrderItem(cartItems, order);
+        order.setOrderItems(orderItem);
         order.setTotal(countTotalPrice(order.getOrderItems()));
         cartItems.clear();
-        return orderMapper.toDto(orderRepository.save(order));
+        OrderDto dto = orderMapper.toDto(orderRepository.save(order));
+        dto.setOrderItems(changedOrderItToOrderItDto(orderItem));
+        return dto;
     }
 
     @Override
@@ -61,13 +66,48 @@ public class OrderServiceImpl implements OrderService {
                 .map(orderMapper::toDto)
                 .toList();
         for (OrderDto orderDto : orderDtos) {
-            List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderDto.getId());
+            Set<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderDto.getId());
             orderDto.setOrderItems(changedOrderItToOrderItDto(orderItems));
         }
         return orderDtos;
     }
 
-    private Set<OrderItemDto> changedOrderItToOrderItDto(List<OrderItem> orderItems) {
+    @Override
+    public OrderDto getOrderById(Long orderId, Authentication authentication) {
+        User user = findUser(authentication);
+        List<Order> orders = orderRepository.findByUserId(user.getId());
+        for (Order order : orders) {
+            if (order.getId().equals(orderId)) {
+                OrderDto dto = orderMapper.toDto(order);
+                Set<OrderItem> orderItems = orderItemRepository.findAllByOrderId((orderId));
+                dto.setOrderItems(changedOrderItToOrderItDto(orderItems));
+                return dto;
+            }
+        }
+        throw new EntityNotFoundException("Can`t find order by id " + orderId);
+    }
+
+    @Override
+    public OrderItemDto getItemByIdInOrder(Long orderId, Long itemId, Authentication authentication) {
+        OrderDto order = getOrderById(orderId, authentication);
+        return order.getOrderItems()
+                .stream()
+                .filter(o -> o.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can`t find order item by id " + itemId));
+    }
+
+    @Override
+    public OrderDto changedStatus(
+            Long id, PatchOrderDto requestDto, Authentication authentication) {
+        User user = findUser(authentication);
+        Order order = orderRepository.findByIdAndUserId(id, user.getId());
+        order.setStatus(requestDto.status());
+        return orderMapper.toDto(order);
+    }
+
+    private Set<OrderItemDto> changedOrderItToOrderItDto(Set<OrderItem> orderItems) {
         return orderItems
                 .stream()
                 .map(orderItemMapper::toDto)

@@ -8,4 +8,6 @@ import project.bookstore.model.Order;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @EntityGraph(attributePaths = {"orderItems", "orderItems.book"})
     List<Order> findByUserId(Long id);
+    @EntityGraph(attributePaths = {"orderItems", "orderItems.book"})
+    Order findByIdAndUserId(Long orderId, Long userId);
 }
