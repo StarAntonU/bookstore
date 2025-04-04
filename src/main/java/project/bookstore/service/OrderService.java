@@ -11,7 +11,7 @@ public interface OrderService {
     OrderDto createOrder(CreateOrderRequestDto requestDto,
                          Authentication authentication);
 
-    List<OrderDto> viewOrders(Authentication authentication);
+    List<OrderDto> getOrders(Authentication authentication);
 
     OrderDto getOrderById(Long orderId, Authentication authentication);
 

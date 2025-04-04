@@ -13,13 +13,13 @@ import project.bookstore.dto.order.CreateOrderRequestDto;
 import project.bookstore.dto.order.OrderDto;
 import project.bookstore.dto.order.PatchOrderDto;
 import project.bookstore.dto.orderitem.OrderItemDto;
-import project.bookstore.exception.unchecked.DataProcessingException;
 import project.bookstore.exception.unchecked.EntityNotFoundException;
 import project.bookstore.mapper.OrderItemMapper;
 import project.bookstore.mapper.OrderMapper;
 import project.bookstore.model.CartItem;
 import project.bookstore.model.Order;
 import project.bookstore.model.OrderItem;
+import project.bookstore.model.ShoppingCart;
 import project.bookstore.model.User;
 import project.bookstore.repository.order.OrderRepository;
 import project.bookstore.repository.orderitem.OrderItemRepository;
@@ -39,26 +39,26 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto createOrder(
             CreateOrderRequestDto requestDto, Authentication authentication) {
         User user = findUser(authentication);
-        Set<CartItem> cartItems = shoppingCartRepository.findByUserId(user.getId()).getCartItems();
-        if (cartItems.isEmpty()) {
-            throw new DataProcessingException("Cart is empty");
+        ShoppingCart cart = shoppingCartRepository.findByUserId(user.getId());
+        if (cart.getCartItems().isEmpty()) {
+            throw new EntityNotFoundException("Cart is empty");
         }
         Order order = new Order();
         order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(Order.Status.NEW);
         order.setShippingAddress(requestDto.shippingAddress());
-        Set<OrderItem> orderItem = createOrderItem(cartItems, order);
+        Set<OrderItem> orderItem = createOrderItem(cart.getCartItems(), order);
+        cart.clearCart();
         order.setOrderItems(orderItem);
         order.setTotal(countTotalPrice(order.getOrderItems()));
-        cartItems.clear();
         OrderDto dto = orderMapper.toDto(orderRepository.save(order));
         dto.setOrderItems(changedOrderItToOrderItDto(orderItem));
         return dto;
     }
 
     @Override
-    public List<OrderDto> viewOrders(Authentication authentication) {
+    public List<OrderDto> getOrders(Authentication authentication) {
         User user = findUser(authentication);
         List<Order> orders = orderRepository.findByUserId(user.getId());
         List<OrderDto> orderDtos = orders
@@ -88,7 +88,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderItemDto getItemByIdInOrder(Long orderId, Long itemId, Authentication authentication) {
+    public OrderItemDto getItemByIdInOrder(
+            Long orderId, Long itemId, Authentication authentication) {
         OrderDto order = getOrderById(orderId, authentication);
         return order.getOrderItems()
                 .stream()
@@ -104,7 +105,11 @@ public class OrderServiceImpl implements OrderService {
         User user = findUser(authentication);
         Order order = orderRepository.findByIdAndUserId(id, user.getId());
         order.setStatus(requestDto.status());
-        return orderMapper.toDto(order);
+        orderRepository.save(order);
+        Set<OrderItem> orderItems = orderItemRepository.findAllByOrderId(id);
+        OrderDto dto = orderMapper.toDto(order);
+        dto.setOrderItems(changedOrderItToOrderItDto(orderItems));
+        return dto;
     }
 
     private Set<OrderItemDto> changedOrderItToOrderItDto(Set<OrderItem> orderItems) {
@@ -131,14 +136,6 @@ public class OrderServiceImpl implements OrderService {
         return orderItems.stream()
                 .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private OrderDto addOrderItemToOrderDto(OrderDto orderDto, List<OrderItem> orderItems) {
-        orderDto.setOrderItems(orderItems
-                .stream()
-                .map(orderItemMapper::toDto)
-                .collect(Collectors.toSet()));
-        return orderDto;
     }
 
     private User findUser(Authentication authentication) {
