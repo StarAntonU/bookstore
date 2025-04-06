@@ -128,6 +128,7 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setPrice(cartItem.getBook().getPrice());
             orderItem.setOrder(order);
             orderItems.add(orderItem);
+            cartItem.setShoppingCart(null);
         }
         return orderItems;
     }
