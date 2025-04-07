@@ -1,6 +1,7 @@
 package project.bookstore.repository.order;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import project.bookstore.model.Order;
@@ -10,5 +11,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUserId(Long id);
 
     @EntityGraph(attributePaths = {"orderItems", "orderItems.book"})
-    Order findByIdAndUserId(Long orderId, Long userId);
+    Optional<Order> findByIdAndUserId(Long orderId, Long userId);
 }

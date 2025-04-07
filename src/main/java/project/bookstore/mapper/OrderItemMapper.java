@@ -7,7 +7,7 @@ import project.bookstore.dto.orderitem.OrderItemDto;
 import project.bookstore.model.CartItem;
 import project.bookstore.model.OrderItem;
 
-@Mapper(config = MapperConfig.class, uses = BookMapper.class)
+@Mapper(config = MapperConfig.class)
 public interface OrderItemMapper {
     @Mapping(target = "bookId", source = "book.id")
     OrderItemDto toDto(OrderItem orderItem);

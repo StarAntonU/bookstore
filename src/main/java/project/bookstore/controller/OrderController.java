@@ -17,6 +17,8 @@ import project.bookstore.dto.order.CreateOrderRequestDto;
 import project.bookstore.dto.order.OrderDto;
 import project.bookstore.dto.order.PatchOrderDto;
 import project.bookstore.dto.orderitem.OrderItemDto;
+import project.bookstore.model.User;
+import project.bookstore.service.OrderItemService;
 import project.bookstore.service.OrderService;
 
 @Tag(name = "Order", description = "Endpoints for managing orders")
@@ -25,6 +27,7 @@ import project.bookstore.service.OrderService;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+    private final OrderItemService orderItemService;
 
     @Operation(summary = "Create order", description = "Create a new order")
     @PostMapping
@@ -36,13 +39,13 @@ public class OrderController {
     @Operation(summary = "View orders", description = "View all orders")
     @GetMapping
     public List<OrderDto> getOrders(Authentication authentication) {
-        return orderService.getOrders(authentication);
+        return orderService.getOrders(findUserId(authentication));
     }
 
     @Operation(summary = "Get order", description = "Get one order by id")
-    @GetMapping("/{orderId}/items")
+    @GetMapping("/{orderId}")
     public OrderDto getOrderById(@PathVariable Long orderId, Authentication authentication) {
-        return orderService.getOrderById(orderId, authentication);
+        return orderService.getOrderById(orderId, findUserId(authentication));
     }
 
     @Operation(summary = "Get item", description = "Get one item in order by id")
@@ -50,7 +53,7 @@ public class OrderController {
     public OrderItemDto getItemByIdInOrder(@PathVariable Long orderId,
                                            @PathVariable Long itemId,
                                            Authentication authentication) {
-        return orderService.getItemByIdInOrder(orderId, itemId, authentication);
+        return orderItemService.getItemByIdInOrder(orderId, itemId, findUserId(authentication));
     }
 
     @Operation(summary = "Change status", description = "Change a status order")
@@ -59,6 +62,11 @@ public class OrderController {
     public OrderDto changedStatus(@PathVariable Long id,
                                       @RequestBody PatchOrderDto requestDto,
                                       Authentication authentication) {
-        return orderService.changedStatus(id, requestDto, authentication);
+        return orderService.changedStatus(id, requestDto, findUserId(authentication));
+    }
+
+    private Long findUserId(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return user.getId();
     }
 }

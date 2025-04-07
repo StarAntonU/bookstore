@@ -1,12 +1,9 @@
 package project.bookstore.service.impl;
 
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.bookstore.dto.cartitem.CartItemDto;
 import project.bookstore.dto.cartitem.CreateCartItemRequestDto;
 import project.bookstore.dto.cartitem.UpdateCartItemDto;
 import project.bookstore.dto.shoppingcart.ShoppingCartDto;
@@ -46,10 +43,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .ifPresentOrElse(item -> item.setQuantity(item.getQuantity()
                                 + requestDto.quantity()),
                         () -> addCartItemToCart(requestDto, book, cart));
-        shoppingCartRepository.save(cart);
-        ShoppingCartDto dto = shoppingCartMapper.toDto(cart);
-        dto.setCartItemDtos(changedCartItemToCartItemDto(cart.getCartItems()));
-        return dto;
+        return shoppingCartMapper.toDto(shoppingCartRepository.save(cart));
     }
 
     @Override
@@ -65,18 +59,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 }).orElseThrow(() -> new EntityNotFoundException(
                         "Can`t find cart item by id " + id));
         cartItemRepository.save(cartItem);
-        ShoppingCartDto dto = shoppingCartMapper.toDto(cart);
-        dto.setCartItemDtos(changedCartItemToCartItemDto(cart.getCartItems()));
-        return dto;
+        return shoppingCartMapper.toDto(cart);
     }
 
     @Override
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         Long userId = findUser(authentication);
         ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
-        ShoppingCartDto dto = shoppingCartMapper.toDto(cart);
-        dto.setCartItemDtos(changedCartItemToCartItemDto(cart.getCartItems()));
-        return dto;
+        return shoppingCartMapper.toDto(cart);
     }
 
     @Override
@@ -92,13 +82,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUser(user);
         shoppingCartRepository.save(shoppingCart);
-    }
-
-    private Set<CartItemDto> changedCartItemToCartItemDto(Set<CartItem> cartItems) {
-        return cartItems
-                .stream()
-                .map(cartItemMapper::toDto)
-                .collect(Collectors.toSet());
     }
 
     private Long findUser(Authentication authentication) {

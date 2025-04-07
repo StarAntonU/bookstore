@@ -6,8 +6,9 @@ import project.bookstore.config.MapperConfig;
 import project.bookstore.dto.shoppingcart.ShoppingCartDto;
 import project.bookstore.model.ShoppingCart;
 
-@Mapper(config = MapperConfig.class, uses = CartItemMapper.class)
+@Mapper(config = MapperConfig.class, componentModel = "spring", uses = CartItemMapper.class)
 public interface ShoppingCartMapper {
     @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "cartItemDtos", source = "cartItems")
     ShoppingCartDto toDto(ShoppingCart shoppingCart);
 }
