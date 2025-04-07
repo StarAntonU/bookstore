@@ -2,6 +2,7 @@ package project.bookstore.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +19,6 @@ import project.bookstore.dto.order.OrderDto;
 import project.bookstore.dto.order.PatchOrderDto;
 import project.bookstore.dto.orderitem.OrderItemDto;
 import project.bookstore.model.User;
-import project.bookstore.service.OrderItemService;
 import project.bookstore.service.OrderService;
 
 @Tag(name = "Order", description = "Endpoints for managing orders")
@@ -27,13 +27,12 @@ import project.bookstore.service.OrderService;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-    private final OrderItemService orderItemService;
 
     @Operation(summary = "Create order", description = "Create a new order")
     @PostMapping
     public OrderDto createOrder(
-            @RequestBody CreateOrderRequestDto requestDto, Authentication authentication) {
-        return orderService.createOrder(requestDto, authentication);
+            @RequestBody @Valid CreateOrderRequestDto requestDto, Authentication authentication) {
+        return orderService.createOrder(requestDto, findUserId(authentication));
     }
 
     @Operation(summary = "View orders", description = "View all orders")
@@ -53,16 +52,15 @@ public class OrderController {
     public OrderItemDto getItemByIdInOrder(@PathVariable Long orderId,
                                            @PathVariable Long itemId,
                                            Authentication authentication) {
-        return orderItemService.getItemByIdInOrder(orderId, itemId, findUserId(authentication));
+        return orderService.getItemByIdInOrder(orderId, itemId, findUserId(authentication));
     }
 
     @Operation(summary = "Change status", description = "Change a status order")
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public OrderDto changedStatus(@PathVariable Long id,
-                                      @RequestBody PatchOrderDto requestDto,
-                                      Authentication authentication) {
-        return orderService.changedStatus(id, requestDto, findUserId(authentication));
+                                      @RequestBody @Valid PatchOrderDto requestDto) {
+        return orderService.changedStatus(id, requestDto);
     }
 
     private Long findUserId(Authentication authentication) {

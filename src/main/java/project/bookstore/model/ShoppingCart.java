@@ -34,8 +34,7 @@ public class ShoppingCart {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
     private Set<CartItem> cartItems = new HashSet<>();
-
-    @Column(name = "is_deleted", nullable = false)
+    @Column(nullable = false)
     private boolean isDeleted = false;
 
     public void addItemToCart(CartItem cartItem) {

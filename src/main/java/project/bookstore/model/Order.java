@@ -32,7 +32,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @Column(nullable = false)
@@ -47,7 +47,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST,CascadeType.MERGE},
             orphanRemoval = true)
     private Set<OrderItem> orderItems = new HashSet<>();
-    @Column(name = "is_deleted", nullable = false)
+    @Column(nullable = false)
     private boolean isDeleted = false;
 
     public enum Status {

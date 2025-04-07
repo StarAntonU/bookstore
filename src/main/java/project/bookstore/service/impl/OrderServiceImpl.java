@@ -7,12 +7,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import project.bookstore.dto.order.CreateOrderRequestDto;
 import project.bookstore.dto.order.OrderDto;
 import project.bookstore.dto.order.PatchOrderDto;
+import project.bookstore.dto.orderitem.OrderItemDto;
 import project.bookstore.exception.unchecked.EntityNotFoundException;
+import project.bookstore.exception.unchecked.OrderProcessingException;
 import project.bookstore.mapper.OrderMapper;
 import project.bookstore.model.CartItem;
 import project.bookstore.model.Order;
@@ -21,6 +22,7 @@ import project.bookstore.model.ShoppingCart;
 import project.bookstore.model.User;
 import project.bookstore.repository.order.OrderRepository;
 import project.bookstore.repository.shoppingcart.ShoppingCartRepository;
+import project.bookstore.repository.user.UserRepository;
 import project.bookstore.service.OrderService;
 
 @Service
@@ -30,14 +32,17 @@ public class OrderServiceImpl implements OrderService {
     private final ShoppingCartRepository shoppingCartRepository;
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
 
     @Override
     public OrderDto createOrder(
-            CreateOrderRequestDto requestDto, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        ShoppingCart cart = shoppingCartRepository.findByUserId(user.getId());
+            CreateOrderRequestDto requestDto, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException("Can`t find user bu id " + userId)
+        );
+        ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
         if (cart.getCartItems().isEmpty()) {
-            throw new EntityNotFoundException("Cart is empty");
+            throw new OrderProcessingException("Cart is empty");
         }
         Order order = new Order();
         order.setUser(user);
@@ -69,10 +74,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto changedStatus(Long id, PatchOrderDto requestDto, Long userId) {
-        Order order = orderRepository.findByIdAndUserId(id, userId).orElseThrow(
-                () -> new EntityNotFoundException(String.format(
-                        "Can`t find order by order id %s and user id %s", id, userId)));
+    public OrderItemDto getItemByIdInOrder(Long orderId, Long itemId, Long userId) {
+        OrderDto order = getOrderById(orderId, userId);
+        return order.orderItems()
+                .stream()
+                .filter(o -> o.id().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "Can`t find order %s or item %s", orderId, itemId)));
+    }
+
+    @Override
+    public OrderDto changedStatus(Long id, PatchOrderDto requestDto) {
+        Order order = orderRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "Can`t find order by order id %s and user id %s" + id));
         order.setStatus(requestDto.status());
         orderRepository.save(order);
         return orderMapper.toDto(order);
