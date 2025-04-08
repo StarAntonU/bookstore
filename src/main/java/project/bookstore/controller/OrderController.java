@@ -1,0 +1,73 @@
+package project.bookstore.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import project.bookstore.dto.order.CreateOrderRequestDto;
+import project.bookstore.dto.order.OrderDto;
+import project.bookstore.dto.order.PatchOrderDto;
+import project.bookstore.dto.orderitem.OrderItemDto;
+import project.bookstore.model.User;
+import project.bookstore.service.OrderService;
+
+@Tag(name = "Order", description = "Endpoints for managing orders")
+@RestController
+@RequestMapping("/orders")
+@RequiredArgsConstructor
+public class OrderController {
+    private final OrderService orderService;
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create order", description = "Create a new order")
+    @PostMapping
+    public OrderDto createOrder(
+            @RequestBody @Valid CreateOrderRequestDto requestDto, Authentication authentication) {
+        return orderService.createOrder(requestDto, findUserId(authentication));
+    }
+
+    @Operation(summary = "View orders", description = "View all orders")
+    @GetMapping
+    public List<OrderDto> getOrders(Authentication authentication) {
+        return orderService.getOrders(findUserId(authentication));
+    }
+
+    @Operation(summary = "Get order", description = "Get one order by id")
+    @GetMapping("/{orderId}")
+    public OrderDto getOrderById(@PathVariable Long orderId, Authentication authentication) {
+        return orderService.getOrderById(orderId, findUserId(authentication));
+    }
+
+    @Operation(summary = "Get item", description = "Get one item in order by id")
+    @GetMapping("/{orderId}/items/{itemId}")
+    public OrderItemDto getItemByIdInOrder(@PathVariable Long orderId,
+                                           @PathVariable Long itemId,
+                                           Authentication authentication) {
+        return orderService.getItemByIdInOrder(orderId, itemId, findUserId(authentication));
+    }
+
+    @Operation(summary = "Change status", description = "Change a status order")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}")
+    public OrderDto changedStatus(@PathVariable Long id,
+                                      @RequestBody @Valid PatchOrderDto requestDto) {
+        return orderService.changedStatus(id, requestDto);
+    }
+
+    private Long findUserId(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return user.getId();
+    }
+}

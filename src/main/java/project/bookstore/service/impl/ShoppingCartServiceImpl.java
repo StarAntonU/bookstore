@@ -43,8 +43,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .ifPresentOrElse(item -> item.setQuantity(item.getQuantity()
                                 + requestDto.quantity()),
                         () -> addCartItemToCart(requestDto, book, cart));
-        shoppingCartRepository.save(cart);
-        return shoppingCartMapper.toDto(cart);
+        return shoppingCartMapper.toDto(shoppingCartRepository.save(cart));
     }
 
     @Override
@@ -66,8 +65,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         Long userId = findUser(authentication);
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
-        return shoppingCartMapper.toDto(shoppingCart);
+        ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
+        return shoppingCartMapper.toDto(cart);
     }
 
     @Override

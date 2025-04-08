@@ -30,13 +30,20 @@ public class ShoppingCart {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id", nullable = false)
     private User user;
-    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "shoppingCart",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true)
     private Set<CartItem> cartItems = new HashSet<>();
-    @Column(name = "is_deleted", nullable = false)
+    @Column(nullable = false)
     private boolean isDeleted = false;
 
     public void addItemToCart(CartItem cartItem) {
         cartItem.setShoppingCart(this);
         cartItems.add(cartItem);
     }
+
+    public void clearCart() {
+        cartItems.clear();
+    }
+
 }
