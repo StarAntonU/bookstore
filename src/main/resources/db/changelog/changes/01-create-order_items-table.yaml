@@ -39,3 +39,15 @@ databaseChangeLog:
                   defaultValueBoolean: false
                   constraints:
                     nullable: false
+              - addForeignKeyConstraint:
+                  baseTableName: order_items
+                  constraintsName: fk_order_items_order
+                  referencedTableName: orders
+                  baseColumnName: order_id
+                  referencedColumnNames: id
+              - addForeignKeyConstraint:
+                  baseTableName: order_items
+                  constraintsName: fk_order_items_book
+                  referencedTableName: books
+                  baseColumnNames: book_id
+                  referencedColumnNames: id

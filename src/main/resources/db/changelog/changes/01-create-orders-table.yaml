@@ -42,3 +42,9 @@ databaseChangeLog:
                   defaultValueBoolean: false
                   constraints:
                     nullable: false
+              - addForeignKeyConstraint:
+                  baseTableName: orders
+                  constraintName: fk_orders_user
+                  referencedTableName: users
+                  baseColumnNames: user_id
+                  referencedColumnNames: id

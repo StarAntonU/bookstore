@@ -21,6 +21,6 @@ databaseChangeLog:
               - addForeignKeyConstraint:
                   baseTableName: books_categories
                   constraintName: fk_books_categories_category
-                  referencedTableName:
+                  referencedTableName: categories
                   baseColumnNames: category_id
                   referencedColumnNames: id

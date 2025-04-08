@@ -78,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
         OrderDto order = getOrderById(orderId, userId);
         return order.orderItems()
                 .stream()
-                .filter(o -> o.id().equals(itemId))
+                .filter(item -> item.id().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(String.format(
                         "Can`t find order %s or item %s", orderId, itemId)));
@@ -110,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
 
     private BigDecimal countTotalPrice(Set<OrderItem> orderItems) {
         return orderItems.stream()
-                .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
