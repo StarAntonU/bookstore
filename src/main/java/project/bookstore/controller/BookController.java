@@ -22,7 +22,7 @@ import project.bookstore.dto.book.BookSearchParametersDto;
 import project.bookstore.dto.book.CreateBookRequestDto;
 import project.bookstore.service.BookService;
 
-@Tag(name = "Book store", description = "Endpoints for managing books")
+@Tag(name = "Book", description = "Endpoints for managing books")
 @RestController
 @RequestMapping("/books")
 @RequiredArgsConstructor
