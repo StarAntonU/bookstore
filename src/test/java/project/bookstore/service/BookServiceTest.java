@@ -15,6 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import project.bookstore.dto.book.BookDto;
 import project.bookstore.mapper.BookMapper;
 import project.bookstore.model.Book;
+import project.bookstore.repository.book.BookRepository;
+import project.bookstore.repository.book.BookSpecificationBuilder;
+import project.bookstore.repository.category.CategoryRepository;
 import project.bookstore.service.impl.BookServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,6 +26,12 @@ public class BookServiceTest {
     private BookServiceImpl bookService;
     @Mock
     private BookMapper bookMapper;
+    @Mock
+    private BookRepository bookRepository;
+    @Mock
+    private CategoryRepository categoryRepository;
+    @Mock
+    private BookSpecificationBuilder bookSpecificationBuilder;
 
     @Test
     @DisplayName("""
