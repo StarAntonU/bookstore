@@ -1,4 +1,4 @@
-package project.bookstore.category;
+package project.bookstore.service;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
