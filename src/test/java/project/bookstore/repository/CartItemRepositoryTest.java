@@ -18,9 +18,9 @@ public class CartItemRepositoryTest {
 
     @Test
     @DisplayName("Verify custom sql query findByShoppingCartIdAndBookId with correct data")
-    @Sql(scripts = "classpath:database/cartitem/add-cart_item-to-table.sql",
+    @Sql(scripts = "classpath:db/cartitem/add-cart_item-to-table.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/cartitem/delete-cart_item-from-table.sql",
+    @Sql(scripts = "classpath:db/cartitem/delete-cart_item-from-table.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findByShoppingCartIdAndBookId_CorrectData_ReturnCartItem() {
         CartItem actual = cartItemRepository.findByShoppingCartIdAndBookId(1L, 1L);

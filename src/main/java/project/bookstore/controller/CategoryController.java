@@ -30,6 +30,7 @@ import project.bookstore.service.CategoryService;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Create category", description = "Create a new category")

@@ -1,0 +1,1 @@
+insert into users (email, password, first_name, last_name) values ("testadmin@email.com", "$2a$10$ZJV6AjTHWpHlA1OxRm1CGukGr.nFnp8BGBlKJAx78VtB3mDRZQCE.", "TestAdmin", "TestAdmin");

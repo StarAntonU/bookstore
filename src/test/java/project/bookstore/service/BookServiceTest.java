@@ -52,11 +52,11 @@ public class BookServiceTest {
     public void findBookById_CorrectBookId_ReturnValidBookDto() {
         long bookId = 1L;
         Book book = createBook(bookId);
-        BookDto bookDto = mapBookToBookDto(book);
+        BookDto expected = mapBookToBookDto(book);
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
-        when(bookMapper.toDto(book)).thenReturn(bookDto);
+        when(bookMapper.toDto(book)).thenReturn(expected);
         BookDto actual = bookService.findBookById(bookId);
-        Assertions.assertEquals(bookDto, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -66,12 +66,12 @@ public class BookServiceTest {
             """)
     public void findBookById_IncorrectBookId_ReturnException() {
         long bookId = 1000L;
-        String textException = "Can`t find book by id " + bookId;
+        String expected = "Can`t find book by id " + bookId;
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
-        Exception exception = Assertions.assertThrows(EntityNotFoundException.class,
+        Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.findBookById(bookId)
         );
-        Assertions.assertEquals(textException, exception.getMessage());
+        Assertions.assertEquals(expected, actual.getMessage());
     }
 
     @Test
@@ -80,13 +80,13 @@ public class BookServiceTest {
         long categoryId = 1L;
         CreateBookRequestDto createBookDto = createBookRequestDto(categoryId);
         Book book = mapCreateBookToBook(createBookDto, categoryId);
-        BookDto bookDto = mapBookToBookDto(book);
+        BookDto expected = mapBookToBookDto(book);
         when(categoryRepository.existsById(categoryId)).thenReturn(true);
         when(bookMapper.toModel(createBookDto)).thenReturn(book);
         when(bookRepository.save(book)).thenReturn(book);
-        when(bookMapper.toDto(book)).thenReturn(bookDto);
+        when(bookMapper.toDto(book)).thenReturn(expected);
         BookDto actual = bookService.save(createBookDto);
-        Assertions.assertEquals(bookDto, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -96,27 +96,27 @@ public class BookServiceTest {
             """)
     public void save_IncorrectCategory_ReturnException() {
         long categoryId = 100L;
-        String textException = "There categories are not exist " + List.of(categoryId);
+        String expected = "There categories are not exist " + List.of(categoryId);
         CreateBookRequestDto createBookDto = createBookRequestDto(categoryId);
         when(categoryRepository.existsById(categoryId)).thenReturn(false);
-        Exception exception = Assertions.assertThrows(EntityNotFoundException.class,
+        Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.save(createBookDto));
-        Assertions.assertEquals(textException, exception.getMessage());
+        Assertions.assertEquals(expected, actual.getMessage());
     }
 
     @Test
     @DisplayName("Verify method findAll with correct data")
     public void findAll_CorrectDate_ReturnValidData() {
         Book book = createBook(1L);
-        BookDto bookDto = mapBookToBookDto(book);
+        BookDto expected = mapBookToBookDto(book);
         Pageable pageable = PageRequest.of(0, 10);
         List<Book> books = List.of(book);
         PageImpl<Book> bookPage = new PageImpl<>(books, pageable, books.size());
         when(bookRepository.findAll(pageable)).thenReturn(bookPage);
-        when(bookMapper.toDto(book)).thenReturn(bookDto);
-        List<BookDto> bookDtos = bookService.findAll(pageable);
-        Assertions.assertEquals(1, bookDtos.size());
-        Assertions.assertEquals(bookDto, bookDtos.get(0));
+        when(bookMapper.toDto(book)).thenReturn(expected);
+        List<BookDto> actual = bookService.findAll(pageable);
+        Assertions.assertEquals(1, actual.size());
+        Assertions.assertEquals(expected, actual.get(0));
     }
 
     @Test
@@ -125,12 +125,12 @@ public class BookServiceTest {
         long id = 1L;
         CreateBookRequestDto createBookDto = createBookRequestDto(id);
         Book book = mapCreateBookToBook(createBookDto, id);
-        BookDto bookDto = mapBookToBookDto(book);
+        BookDto expected = mapBookToBookDto(book);
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.save(book)).thenReturn(book);
-        when(bookMapper.toDto(book)).thenReturn(bookDto);
+        when(bookMapper.toDto(book)).thenReturn(expected);
         BookDto actual = bookService.update(id, createBookDto);
-        Assertions.assertEquals(bookDto, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -140,12 +140,12 @@ public class BookServiceTest {
             """)
     public void update_IncorrectBookId_ReturnException() {
         long id = 100L;
-        String textException = "Can`t update book by id " + id;
+        String expected = "Can`t update book by id " + id;
         CreateBookRequestDto createBookDto = createBookRequestDto(id);
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
-        Exception exception = Assertions.assertThrows(EntityNotFoundException.class,
+        Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.update(id, createBookDto));
-        Assertions.assertEquals(textException, exception.getMessage());
+        Assertions.assertEquals(expected, actual.getMessage());
     }
 
     @Test
@@ -177,13 +177,13 @@ public class BookServiceTest {
         BookSearchParametersDto params = createBookSearchParametersDto();
         specification = mock(Specification.class);
         Book book = createBook(1L);
-        BookDto bookDto = mapBookToBookDto(book);
+        BookDto expected = mapBookToBookDto(book);
         when(bookSpecificationBuilder.build(params)).thenReturn(specification);
         when(bookRepository.findAll(specification)).thenReturn(List.of(book));
-        when(bookMapper.toDto(book)).thenReturn(bookDto);
+        when(bookMapper.toDto(book)).thenReturn(expected);
         List<BookDto> actual = bookService.search(params);
         Assertions.assertEquals(1, actual.size());
-        Assertions.assertEquals(bookDto, actual.get(0));
+        Assertions.assertEquals(expected, actual.get(0));
     }
 
     private Book createBook(Long bookId) {
