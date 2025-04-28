@@ -1,1 +1,0 @@
-insert into books (id, title, author, isbn, price, description, cover_image) values (1, "Kobzar", "Taras Shevchenko", "1234567890", 123.45, "Good book", "Kobzar");

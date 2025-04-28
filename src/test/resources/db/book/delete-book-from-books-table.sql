@@ -1,1 +1,1 @@
-delete from books where title = "Kobzar";
+delete from books;
