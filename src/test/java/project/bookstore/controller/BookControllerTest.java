@@ -47,9 +47,9 @@ public class BookControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("Verify method save with correct data")
-    @Sql(scripts = {"classpath:db/category/add-category-to-categories-table.sql"},
+    @Sql(scripts = {"classpath:db/category/add-categories-to-categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:db/category/delete-category-from-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/delete-categories-from-categories-table.sql",
             "classpath:db/book/delete-book-from-books-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void save_ValidRequestDto_ReturnValidDto() throws Exception {
@@ -73,13 +73,13 @@ public class BookControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("Verify method findAll with correct data")
-    @Sql(scripts = {"classpath:db/category/add-category-to-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/add-categories-to-categories-table.sql",
             "classpath:db/book/add-books-to-books-table.sql",
-            "classpath:db/books_categories/add-book-category-to-books_categories-table.sql"},
+            "classpath:db/bookscategories/add-book-category-to-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:db/category/delete-category-from-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/delete-categories-from-categories-table.sql",
             "classpath:db/book/delete-book-from-books-table.sql",
-            "classpath:db/books_categories/delete-book-category-from-books_categories-table.sql"},
+            "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAll_ValidData_ReturnArrayDto() throws Exception {
         BookDto[] expected = createArrayBookDtos();
@@ -97,13 +97,13 @@ public class BookControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("Verify method getBookById with correct data")
-    @Sql(scripts = {"classpath:db/category/add-category-to-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/add-categories-to-categories-table.sql",
             "classpath:db/book/add-books-to-books-table.sql",
-            "classpath:db/books_categories/add-book-category-to-books_categories-table.sql"},
+            "classpath:db/bookscategories/add-book-category-to-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:db/category/delete-category-from-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/delete-categories-from-categories-table.sql",
             "classpath:db/book/delete-book-from-books-table.sql",
-            "classpath:db/books_categories/delete-book-category-from-books_categories-table.sql"},
+            "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getBookById_ValidBookId_ReturnBookDto() throws Exception {
         BookDto expected = createBookDto();
@@ -120,13 +120,13 @@ public class BookControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("Verify method update with correct data")
-    @Sql(scripts = {"classpath:db/category/add-category-to-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/add-categories-to-categories-table.sql",
             "classpath:db/book/add-books-to-books-table.sql",
-            "classpath:db/books_categories/add-book-category-to-books_categories-table.sql"},
+            "classpath:db/bookscategories/add-book-category-to-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:db/category/delete-category-from-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/delete-categories-from-categories-table.sql",
             "classpath:db/book/delete-book-from-books-table.sql",
-            "classpath:db/books_categories/delete-book-category-from-books_categories-table.sql"},
+            "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void update_ValidBookData_ReturnBookDto() throws Exception {
         CreateBookRequestDto updateBook = createBookRequestDto();
@@ -147,13 +147,13 @@ public class BookControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("Verify method delete with correct data")
-    @Sql(scripts = {"classpath:db/category/add-category-to-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/add-categories-to-categories-table.sql",
             "classpath:db/book/add-books-to-books-table.sql",
-            "classpath:db/books_categories/add-book-category-to-books_categories-table.sql"},
+            "classpath:db/bookscategories/add-book-category-to-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:db/category/delete-category-from-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/delete-categories-from-categories-table.sql",
             "classpath:db/book/delete-book-from-books-table.sql",
-            "classpath:db/books_categories/delete-book-category-from-books_categories-table.sql"},
+            "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void delete_ValidBookId_ReturnStatus() throws Exception {
         MvcResult delete = mockMvc.perform(
@@ -176,13 +176,13 @@ public class BookControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("Verify method delete with correct data")
-    @Sql(scripts = {"classpath:db/category/add-category-to-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/add-categories-to-categories-table.sql",
             "classpath:db/book/add-books-to-books-table.sql",
-            "classpath:db/books_categories/add-book-category-to-books_categories-table.sql"},
+            "classpath:db/bookscategories/add-book-category-to-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = {"classpath:db/category/delete-category-from-categories-table.sql",
+    @Sql(scripts = {"classpath:db/category/delete-categories-from-categories-table.sql",
             "classpath:db/book/delete-book-from-books-table.sql",
-            "classpath:db/books_categories/delete-book-category-from-books_categories-table.sql"},
+            "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void search_ValidData_ReturnListDto() throws Exception {
         MvcResult result = mockMvc.perform(
