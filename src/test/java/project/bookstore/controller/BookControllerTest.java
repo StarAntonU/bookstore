@@ -90,7 +90,7 @@ public class BookControllerTest {
                 .andReturn();
         BookDto[] actual = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), BookDto[].class);
-        Assertions.assertEquals(2, actual.length);
+        Assertions.assertEquals(4, actual.length);
         EqualsBuilder.reflectionEquals(expected, actual);
     }
 
@@ -156,20 +156,19 @@ public class BookControllerTest {
             "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void delete_ValidBookId_ReturnStatus() throws Exception {
-        MvcResult delete = mockMvc.perform(
+        mockMvc.perform(
                         delete("/books/1")
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent())
-                .andReturn();
+                .andExpect(status().isNoContent());
         MvcResult result = mockMvc.perform(
                         get("/books")
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         BookDto[] actual = objectMapper.readValue(
-                result.getResponse().getContentAsString(), BookDto[].class);
+                result.getResponse().getContentAsByteArray(), BookDto[].class);
         BookDto expected = createBookDto();
-        Assertions.assertEquals(1, actual.length);
+        Assertions.assertEquals(3, actual.length);
         Assertions.assertEquals(expected, actual[0]);
     }
 
@@ -242,7 +241,27 @@ public class BookControllerTest {
         bookTwo.setDescription("Good good book");
         bookTwo.setCoverImage("Kobzar2");
         bookTwo.setCategoriesIds(List.of(1L));
-        return new BookDto[]{bookOne, bookTwo};
+
+        BookDto bookThree = new BookDto();
+        bookThree.setId(3L);
+        bookThree.setTitle("Kobzar3");
+        bookThree.setAuthor("Taras Shevchenko");
+        bookThree.setIsbn("12345678903");
+        bookThree.setPrice(BigDecimal.valueOf(33.44));
+        bookThree.setDescription("Very good book");
+        bookThree.setCoverImage("Kobzar3");
+        bookThree.setCategoriesIds(List.of(2L));
+
+        BookDto bookFour = new BookDto();
+        bookFour.setId(4L);
+        bookFour.setTitle("Kobzar4");
+        bookFour.setAuthor("Taras Shevchenko");
+        bookFour.setIsbn("12345678904");
+        bookFour.setPrice(BigDecimal.valueOf(44.37));
+        bookFour.setDescription("So good book");
+        bookFour.setCoverImage("Kobzar4");
+        bookFour.setCategoriesIds(List.of(2L));
+        return new BookDto[]{bookOne, bookTwo, bookThree, bookFour};
     }
 
     private BookSearchParametersDto createBookSearchParametersDto() {
