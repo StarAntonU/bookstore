@@ -1,5 +1,6 @@
 package project.bookstore.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,21 +50,23 @@ public class CategoryServiceTest {
         when(categoryRepository.save(category)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(expected);
         CategoryDto actual = categoryService.save(categoryRequestDto);
-        Assertions.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("Verify method findAll with correct data")
     public void findAll_CorrectData_ReturnAllCategoriesDto() {
         Category category = creaateCategory();
-        CategoryDto categoryDto = mapCategoryToCategoryDto(category);
+        CategoryDto expected = mapCategoryToCategoryDto(category);
         Pageable pageable = PageRequest.of(0, 10);
         List<Category> categories = List.of(category);
         PageImpl<Category> categoryPage = new PageImpl<>(categories, pageable, categories.size());
         when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
-        when(categoryMapper.toDto(category)).thenReturn(categoryDto);
-        Page<CategoryDto> actual = categoryService.findAll(pageable);
-        Assertions.assertEquals(1, actual.getTotalElements());
+        when(categoryMapper.toDto(category)).thenReturn(expected);
+        Page<CategoryDto> pages = categoryService.findAll(pageable);
+        List<CategoryDto> actual = pages.get().toList();
+        assertEquals(1, actual.size());
+        assertEquals(expected, actual.get(0));
     }
 
     @Test
@@ -74,7 +77,7 @@ public class CategoryServiceTest {
         when(categoryRepository.findById(category.getId())).thenReturn(Optional.of(category));
         when(categoryMapper.toDto(category)).thenReturn(expected);
         CategoryDto actual = categoryService.findCategoryById(category.getId());
-        Assertions.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -89,7 +92,7 @@ public class CategoryServiceTest {
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> categoryService.findCategoryById(category.getId())
         );
-        Assertions.assertEquals(expected, actual.getMessage());
+        assertEquals(expected, actual.getMessage());
     }
 
     @Test
@@ -102,7 +105,7 @@ public class CategoryServiceTest {
         when(categoryRepository.save(category)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(expected);
         CategoryDto actual = categoryService.update(category.getId(), createCategoryDto);
-        Assertions.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -118,7 +121,7 @@ public class CategoryServiceTest {
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> categoryService.update(id, createCategoryDto)
         );
-        Assertions.assertEquals(expected, actual.getMessage());
+        assertEquals(expected, actual.getMessage());
     }
 
     @Test
@@ -141,7 +144,7 @@ public class CategoryServiceTest {
         when(categoryRepository.existsById(id)).thenReturn(false);
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> categoryService.deleteById(id));
-        Assertions.assertEquals(expected, actual.getMessage());
+        assertEquals(expected, actual.getMessage());
     }
 
     @Test
@@ -151,8 +154,8 @@ public class CategoryServiceTest {
         BookDtoWithoutCategoryIds expected = createBookDtoWithoutCategoryIds(id);
         when(bookRepository.findByCategoriesId(id)).thenReturn(List.of(expected));
         List<BookDtoWithoutCategoryIds> actual = categoryService.getBooksByCategoryId(id);
-        Assertions.assertEquals(1, actual.size());
-        Assertions.assertEquals(expected, actual.get(0));
+        assertEquals(1, actual.size());
+        assertEquals(expected, actual.get(0));
     }
 
     private Category creaateCategory() {

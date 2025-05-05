@@ -50,7 +50,7 @@ public class BookServiceTest {
     @Test
     @DisplayName("Verify method findBookById with correct data")
     public void findBookById_CorrectBookId_ReturnValidBookDto() {
-        long bookId = 1L;
+        Long bookId = 1L;
         Book book = createBook(bookId);
         BookDto expected = mapBookToBookDto(book);
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
