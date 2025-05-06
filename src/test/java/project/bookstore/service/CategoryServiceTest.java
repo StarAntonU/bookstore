@@ -4,8 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static project.bookstore.util.CategoryTestUtil.creaateCategory;
+import static project.bookstore.util.CategoryTestUtil.createBookDtoWithoutCategoryIds;
+import static project.bookstore.util.CategoryTestUtil.createCategoryRequestDto;
+import static project.bookstore.util.CategoryTestUtil.mapCategoryToCategoryDto;
+import static project.bookstore.util.CategoryTestUtil.mapCreateCategoryRequestDtoToCategory;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -156,49 +160,5 @@ public class CategoryServiceTest {
         List<BookDtoWithoutCategoryIds> actual = categoryService.getBooksByCategoryId(id);
         assertEquals(1, actual.size());
         assertEquals(expected, actual.get(0));
-    }
-
-    private Category creaateCategory() {
-        Category category = new Category();
-        category.setId(1L);
-        category.setName("Fantasy");
-        category.setDescription("Good book");
-        return category;
-    }
-
-    private CreateCategoryRequestDto createCategoryRequestDto() {
-        return new CreateCategoryRequestDto(
-                "Fantasy",
-                "Good book"
-        );
-    }
-
-    private BookDtoWithoutCategoryIds createBookDtoWithoutCategoryIds(long id) {
-        return new BookDtoWithoutCategoryIds(
-                id,
-                "Kobzar",
-                "Taras Shevchenko",
-                "1234567890",
-                BigDecimal.valueOf(123.45),
-                "Good book",
-                "Kobzar"
-        );
-    }
-
-    private Category mapCreateCategoryRequestDtoToCategory(
-            CreateCategoryRequestDto createCategory) {
-        Category category = new Category();
-        category.setId(1L);
-        category.setName(createCategory.name());
-        category.setDescription(createCategory.description());
-        return category;
-    }
-
-    private CategoryDto mapCategoryToCategoryDto(Category category) {
-        return new CategoryDto(
-                category.getId(),
-                category.getName(),
-                category.getDescription()
-        );
     }
 }

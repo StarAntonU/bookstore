@@ -1,6 +1,7 @@
 package project.bookstore.repository;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,9 @@ public class CartItemRepositoryTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findByShoppingCartIdAndBookId_CorrectData_ReturnCartItem() {
         CartItem actual = cartItemRepository.findByShoppingCartIdAndBookId(1L, 1L);
-        Assertions.assertEquals(1L, actual.getId());
-        Assertions.assertEquals(1L, actual.getShoppingCart().getId());
-        Assertions.assertEquals(1L, actual.getBook().getId());
-        Assertions.assertEquals(2, actual.getQuantity());
+        assertEquals(1L, actual.getId());
+        assertEquals(1L, actual.getShoppingCart().getId());
+        assertEquals(1L, actual.getBook().getId());
+        assertEquals(2, actual.getQuantity());
     }
 }

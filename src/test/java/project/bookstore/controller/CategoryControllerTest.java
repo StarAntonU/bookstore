@@ -9,6 +9,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static project.bookstore.util.CategoryTestUtil.createArrayBookDtos;
+import static project.bookstore.util.CategoryTestUtil.createCategoryDto;
+import static project.bookstore.util.CategoryTestUtil.createCategoryRequestDto;
+import static project.bookstore.util.CategoryTestUtil.createCategoryRequestDtoInvalidData;
+import static project.bookstore.util.CategoryTestUtil.createInvalidCategoryDto;
+import static project.bookstore.util.CategoryTestUtil.createPageImpl;
+import static project.bookstore.util.CategoryTestUtil.createUpdateCategory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,7 +36,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import project.bookstore.controller.util.CategoryUtilTest;
 import project.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import project.bookstore.dto.category.CategoryDto;
 import project.bookstore.dto.category.CreateCategoryRequestDto;
@@ -39,8 +45,6 @@ public class CategoryControllerTest {
     protected static MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private CategoryUtilTest categoryUtilTest;
 
     @BeforeAll
     static void beforeAll(
@@ -58,8 +62,8 @@ public class CategoryControllerTest {
     @Sql(scripts = "classpath:db/category/delete-categories-from-categories-table.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void save_ValidCategoryDto_ReturnCategoryDto() throws Exception {
-        CreateCategoryRequestDto categoryRequestDto = categoryUtilTest.createCategoryRequestDto();
-        CategoryDto expected = categoryUtilTest.createCategoryDto();
+        CreateCategoryRequestDto categoryRequestDto = createCategoryRequestDto();
+        CategoryDto expected = createCategoryDto();
         String jsonResult = objectMapper.writeValueAsString(categoryRequestDto);
         MvcResult result = mockMvc.perform(
                         post("/categories")
@@ -77,7 +81,7 @@ public class CategoryControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("Verify method save with invalid data")
     public void save_InvalidData_ReturnStatus() throws Exception {
-        CreateCategoryRequestDto category = categoryUtilTest.createCategoryRequestDtoInvalidData();
+        CreateCategoryRequestDto category = createCategoryRequestDtoInvalidData();
         String jsonResult = objectMapper.writeValueAsString(category);
         mockMvc.perform(
                 post("/categories")
@@ -103,7 +107,7 @@ public class CategoryControllerTest {
         List<CategoryDto> actual = objectMapper.readValue(root.get("content").toString(),
                 new TypeReference<>() {
                 });
-        PageImpl<CategoryDto> page = categoryUtilTest.createPageImpl();
+        PageImpl<CategoryDto> page = createPageImpl();
         List<CategoryDto> expected = page.get().toList();
         assertEquals(expected, actual);
     }
@@ -126,7 +130,7 @@ public class CategoryControllerTest {
     @Sql(scripts = "classpath:db/category/delete-categories-from-categories-table.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getCategoryById_ValidCategoryId_ReturnCategoryDto() throws Exception {
-        CategoryDto expected = categoryUtilTest.createUpdateCategory();
+        CategoryDto expected = createUpdateCategory();
         MvcResult result = mockMvc.perform(
                         get("/categories/2")
                                 .contentType(MediaType.APPLICATION_JSON))
@@ -173,7 +177,7 @@ public class CategoryControllerTest {
                 new TypeReference<>() {
                 });
         Pageable pageable = PageRequest.of(0, 1);
-        List<CategoryDto> categories = List.of(categoryUtilTest.createUpdateCategory());
+        List<CategoryDto> categories = List.of(createUpdateCategory());
         PageImpl<CategoryDto> page = new PageImpl<>(categories, pageable, categories.size());
         List<CategoryDto> expected = page.get().toList();
         assertEquals(expected, actual);
@@ -201,7 +205,7 @@ public class CategoryControllerTest {
     @Sql(scripts = "classpath:db/category/delete-categories-from-categories-table.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateCategory_ValidData_ReturnCategoryDto() throws Exception {
-        CreateCategoryRequestDto updateDto = categoryUtilTest.createCategoryRequestDto();
+        CreateCategoryRequestDto updateDto = createCategoryRequestDto();
         String jsonResult = objectMapper.writeValueAsString(updateDto);
         MvcResult result = mockMvc.perform(
                         put("/categories/2")
@@ -211,7 +215,7 @@ public class CategoryControllerTest {
                 .andReturn();
         CategoryDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
-        CategoryDto expected = categoryUtilTest.createCategoryDto();
+        CategoryDto expected = createCategoryDto();
         assertEquals(expected, actual);
     }
 
@@ -223,7 +227,7 @@ public class CategoryControllerTest {
     @Sql(scripts = "classpath:db/category/delete-categories-from-categories-table.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateCategory_InvalidData_ReturnStatus() throws Exception {
-        CreateCategoryRequestDto invalidCategoryDto = categoryUtilTest.createInvalidCategoryDto();
+        CreateCategoryRequestDto invalidCategoryDto = createInvalidCategoryDto();
         String jsonResult = objectMapper.writeValueAsString(invalidCategoryDto);
         mockMvc.perform(
                         put("/categories/1")
@@ -240,8 +244,8 @@ public class CategoryControllerTest {
     @Sql(scripts = "classpath:db/category/delete-categories-from-categories-table.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateCategory_InvalidUrl_ReturnStatus() throws Exception {
-        CreateCategoryRequestDto invalidCategoryDto = categoryUtilTest.createCategoryRequestDto();
-        String jsonResult = objectMapper.writeValueAsString(invalidCategoryDto);
+        CreateCategoryRequestDto categoryDto = createCategoryRequestDto();
+        String jsonResult = objectMapper.writeValueAsString(categoryDto);
         mockMvc.perform(
                         put("/categories/12")
                                 .content(jsonResult)
@@ -268,7 +272,7 @@ public class CategoryControllerTest {
                 .andReturn();
         BookDtoWithoutCategoryIds[] actual = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), BookDtoWithoutCategoryIds[].class);
-        BookDtoWithoutCategoryIds[] expected = categoryUtilTest.createArrayBookDtos();
+        BookDtoWithoutCategoryIds[] expected = createArrayBookDtos();
         assertEquals(expected.length, actual.length);
         assertEquals(expected[0], actual[0]);
         assertEquals(expected[1], actual[1]);

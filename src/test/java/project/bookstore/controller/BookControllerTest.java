@@ -10,6 +10,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static project.bookstore.util.BookTestUtil.createArrayBookDtos;
+import static project.bookstore.util.BookTestUtil.createBookDto;
+import static project.bookstore.util.BookTestUtil.createBookRequestDto;
+import static project.bookstore.util.BookTestUtil.createInvalidBookRequestDto;
+import static project.bookstore.util.BookTestUtil.mapCreateBookDtoToBookDto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,7 +29,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import project.bookstore.controller.util.BookUtilTest;
 import project.bookstore.dto.book.BookDto;
 import project.bookstore.dto.book.CreateBookRequestDto;
 
@@ -37,8 +41,6 @@ public class BookControllerTest {
     protected static MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private BookUtilTest bookUtilTest;
 
     @BeforeAll
     static void beforeAll(
@@ -56,8 +58,8 @@ public class BookControllerTest {
     @Sql(scripts = {"classpath:db/book/delete-book-from-books-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void save_ValidRequestDto_ReturnValidDto() throws Exception {
-        CreateBookRequestDto createBookDto = bookUtilTest.createBookRequestDto();
-        BookDto expected = bookUtilTest.mapCreateBookDtoToBookDto(createBookDto, 1L);
+        CreateBookRequestDto createBookDto = createBookRequestDto(1L);
+        BookDto expected = mapCreateBookDtoToBookDto(createBookDto, 1L);
         String jsonRequest = objectMapper.writeValueAsString(createBookDto);
         MvcResult result = mockMvc.perform(
                         post("/books")
@@ -77,7 +79,7 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("Verify method save with category is not exist")
     public void save_InvalidCategory_ReturnStatus() throws Exception {
-        CreateBookRequestDto book = bookUtilTest.createInvalidBookRequestDto();
+        CreateBookRequestDto book = createInvalidBookRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(book);
         mockMvc.perform(
                 post("/books")
@@ -96,7 +98,7 @@ public class BookControllerTest {
             "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void findAll_ValidData_ReturnArrayDto() throws Exception {
-        BookDto[] expected = bookUtilTest.createArrayBookDtos();
+        BookDto[] expected = createArrayBookDtos();
         MvcResult result = mockMvc.perform(
                         get("/books")
                                 .contentType(MediaType.APPLICATION_JSON))
@@ -134,7 +136,7 @@ public class BookControllerTest {
             "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getBookById_ValidBookId_ReturnBookDto() throws Exception {
-        BookDto expected = bookUtilTest.createBookDto();
+        BookDto expected = createBookDto();
         MvcResult result = mockMvc.perform(
                         get("/books/2")
                                 .contentType(MediaType.APPLICATION_JSON))
@@ -165,9 +167,9 @@ public class BookControllerTest {
             "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void update_ValidBookData_ReturnBookDto() throws Exception {
-        CreateBookRequestDto updateBook = bookUtilTest.createBookRequestDto();
+        CreateBookRequestDto updateBook = createBookRequestDto(1L);
         String jsonRequest = objectMapper.writeValueAsString(updateBook);
-        BookDto expected = bookUtilTest.mapCreateBookDtoToBookDto(updateBook, 2L);
+        BookDto expected = mapCreateBookDtoToBookDto(updateBook, 2L);
         MvcResult result = mockMvc.perform(
                         put("/books/2")
                                 .content(jsonRequest)
@@ -190,7 +192,7 @@ public class BookControllerTest {
             "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void update_InvalidBook_ReturnStatus() throws Exception {
-        CreateBookRequestDto book = bookUtilTest.createInvalidBookRequestDto();
+        CreateBookRequestDto book = createInvalidBookRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(book);
         mockMvc.perform(
                         put("/books/1")
@@ -210,7 +212,7 @@ public class BookControllerTest {
             "classpath:db/bookscategories/delete-book-category-from-books_categories-table.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void update_InvalidUrl_ReturnStatus() throws Exception {
-        CreateBookRequestDto book = bookUtilTest.createBookRequestDto();
+        CreateBookRequestDto book = createBookRequestDto(1L);
         String jsonRequest = objectMapper.writeValueAsString(book);
         mockMvc.perform(
                         put("/books/12")
@@ -241,7 +243,7 @@ public class BookControllerTest {
                 .andReturn();
         BookDto[] actual = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), BookDto[].class);
-        BookDto expected = bookUtilTest.createBookDto();
+        BookDto expected = createBookDto();
         assertEquals(3, actual.length);
         assertEquals(expected, actual[0]);
     }
@@ -279,7 +281,7 @@ public class BookControllerTest {
                 .andReturn();
         BookDto[] actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto[].class);
-        BookDto expected = bookUtilTest.createBookDto();
+        BookDto expected = createBookDto();
         assertEquals(1, actual.length);
         assertEquals(expected, actual[0]);
     }

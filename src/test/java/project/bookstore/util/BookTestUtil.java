@@ -1,14 +1,18 @@
-package project.bookstore.controller.util;
+package project.bookstore.util;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Component;
 import project.bookstore.dto.book.BookDto;
+import project.bookstore.dto.book.BookSearchParametersDto;
 import project.bookstore.dto.book.CreateBookRequestDto;
+import project.bookstore.model.Book;
+import project.bookstore.model.Category;
 
 @Component
-public class BookUtilTest {
-    public CreateBookRequestDto createBookRequestDto() {
+public class BookTestUtil {
+    public static CreateBookRequestDto createBookRequestDto(Long categoryId) {
         CreateBookRequestDto createBookDto = new CreateBookRequestDto();
         createBookDto.setTitle("Kobzar");
         createBookDto.setAuthor("Taras Shevchenko");
@@ -16,11 +20,11 @@ public class BookUtilTest {
         createBookDto.setPrice(BigDecimal.valueOf(123.45));
         createBookDto.setDescription("Good book");
         createBookDto.setCoverImage("Kobzar");
-        createBookDto.setCategories(List.of(1L));
+        createBookDto.setCategories(List.of(categoryId));
         return createBookDto;
     }
 
-    public CreateBookRequestDto createInvalidBookRequestDto() {
+    public static CreateBookRequestDto createInvalidBookRequestDto() {
         CreateBookRequestDto createBookDto = new CreateBookRequestDto();
         createBookDto.setTitle("A");
         createBookDto.setAuthor("B");
@@ -32,7 +36,7 @@ public class BookUtilTest {
         return createBookDto;
     }
 
-    public BookDto createBookDto() {
+    public static BookDto createBookDto() {
         BookDto book = new BookDto();
         book.setId(2L);
         book.setTitle("Kobzar2");
@@ -45,7 +49,7 @@ public class BookUtilTest {
         return book;
     }
 
-    public BookDto[] createArrayBookDtos() {
+    public static BookDto[] createArrayBookDtos() {
         BookDto bookOne = new BookDto();
         bookOne.setId(1L);
         bookOne.setTitle("Kobzar");
@@ -88,7 +92,7 @@ public class BookUtilTest {
         return new BookDto[]{bookOne, bookTwo, bookThree, bookFour};
     }
 
-    public BookDto mapCreateBookDtoToBookDto(CreateBookRequestDto book, Long id) {
+    public static BookDto mapCreateBookDtoToBookDto(CreateBookRequestDto book, Long id) {
         BookDto bookDto = new BookDto();
         bookDto.setId(id);
         bookDto.setTitle(book.getTitle());
@@ -98,6 +102,53 @@ public class BookUtilTest {
         bookDto.setDescription(book.getDescription());
         bookDto.setCoverImage(book.getCoverImage());
         bookDto.setCategoriesIds(book.getCategories());
+        return bookDto;
+    }
+
+    public static Book createBook(Long bookId) {
+        Book book = new Book();
+        book.setId(bookId);
+        book.setTitle("Kobzar");
+        book.setAuthor("Taras Shevchenko");
+        book.setIsbn("1234567890");
+        book.setPrice(BigDecimal.valueOf(123.45));
+        book.setDescription("Good book");
+        book.setCoverImage("Kobzar");
+        book.setCategories(Set.of());
+        return book;
+    }
+
+    public static BookSearchParametersDto createBookSearchParametersDto() {
+        return new BookSearchParametersDto(
+                new String[1],
+                new String[1],
+                new String[1]
+        );
+    }
+
+    public static Book mapCreateBookToBook(CreateBookRequestDto createBookDto, Long categoryId) {
+        Book book = new Book();
+        book.setId(1L);
+        book.setTitle(createBookDto.getTitle());
+        book.setAuthor(createBookDto.getAuthor());
+        book.setIsbn(createBookDto.getIsbn());
+        book.setPrice(createBookDto.getPrice());
+        book.setDescription(createBookDto.getDescription());
+        book.setCoverImage(createBookDto.getCoverImage());
+        book.setCategories(Set.of(new Category(categoryId)));
+        return book;
+    }
+
+    public static BookDto mapBookToBookDto(Book book) {
+        BookDto bookDto = new BookDto();
+        bookDto.setId(book.getId());
+        bookDto.setTitle(book.getTitle());
+        bookDto.setAuthor(book.getAuthor());
+        bookDto.setIsbn(book.getIsbn());
+        bookDto.setPrice(book.getPrice());
+        bookDto.setDescription(book.getDescription());
+        bookDto.setCoverImage(book.getCoverImage());
+        bookDto.setCategoriesIds(List.of(1L));
         return bookDto;
     }
 }

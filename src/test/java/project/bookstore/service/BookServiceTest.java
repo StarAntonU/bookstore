@@ -1,14 +1,18 @@
 package project.bookstore.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static project.bookstore.util.BookTestUtil.createBook;
+import static project.bookstore.util.BookTestUtil.createBookRequestDto;
+import static project.bookstore.util.BookTestUtil.createBookSearchParametersDto;
+import static project.bookstore.util.BookTestUtil.mapBookToBookDto;
+import static project.bookstore.util.BookTestUtil.mapCreateBookToBook;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +30,6 @@ import project.bookstore.dto.book.CreateBookRequestDto;
 import project.bookstore.exception.unchecked.EntityNotFoundException;
 import project.bookstore.mapper.BookMapper;
 import project.bookstore.model.Book;
-import project.bookstore.model.Category;
 import project.bookstore.repository.book.BookRepository;
 import project.bookstore.repository.book.BookSpecificationBuilder;
 import project.bookstore.repository.category.CategoryRepository;
@@ -56,7 +59,7 @@ public class BookServiceTest {
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(bookMapper.toDto(book)).thenReturn(expected);
         BookDto actual = bookService.findBookById(bookId);
-        Assertions.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -71,7 +74,7 @@ public class BookServiceTest {
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.findBookById(bookId)
         );
-        Assertions.assertEquals(expected, actual.getMessage());
+        assertEquals(expected, actual.getMessage());
     }
 
     @Test
@@ -86,7 +89,7 @@ public class BookServiceTest {
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toDto(book)).thenReturn(expected);
         BookDto actual = bookService.save(createBookDto);
-        Assertions.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -101,7 +104,7 @@ public class BookServiceTest {
         when(categoryRepository.existsById(categoryId)).thenReturn(false);
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.save(createBookDto));
-        Assertions.assertEquals(expected, actual.getMessage());
+        assertEquals(expected, actual.getMessage());
     }
 
     @Test
@@ -115,8 +118,8 @@ public class BookServiceTest {
         when(bookRepository.findAll(pageable)).thenReturn(bookPage);
         when(bookMapper.toDto(book)).thenReturn(expected);
         List<BookDto> actual = bookService.findAll(pageable);
-        Assertions.assertEquals(1, actual.size());
-        Assertions.assertEquals(expected, actual.get(0));
+        assertEquals(1, actual.size());
+        assertEquals(expected, actual.get(0));
     }
 
     @Test
@@ -130,7 +133,7 @@ public class BookServiceTest {
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toDto(book)).thenReturn(expected);
         BookDto actual = bookService.update(id, createBookDto);
-        Assertions.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -145,7 +148,7 @@ public class BookServiceTest {
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.update(id, createBookDto));
-        Assertions.assertEquals(expected, actual.getMessage());
+        assertEquals(expected, actual.getMessage());
     }
 
     @Test
@@ -168,7 +171,7 @@ public class BookServiceTest {
         when(bookRepository.existsById(id)).thenReturn(false);
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.deleteById(id));
-        Assertions.assertEquals(expected, actual.getMessage());
+        assertEquals(expected, actual.getMessage());
     }
 
     @Test
@@ -182,66 +185,7 @@ public class BookServiceTest {
         when(bookRepository.findAll(specification)).thenReturn(List.of(book));
         when(bookMapper.toDto(book)).thenReturn(expected);
         List<BookDto> actual = bookService.search(params);
-        Assertions.assertEquals(1, actual.size());
-        Assertions.assertEquals(expected, actual.get(0));
-    }
-
-    private Book createBook(Long bookId) {
-        Book book = new Book();
-        book.setId(bookId);
-        book.setTitle("Kobzar");
-        book.setAuthor("Taras Shevchenko");
-        book.setIsbn("1234567890");
-        book.setPrice(BigDecimal.valueOf(123.45));
-        book.setDescription("Good book");
-        book.setCoverImage("Kobzar");
-        book.setCategories(Set.of());
-        return book;
-    }
-
-    private CreateBookRequestDto createBookRequestDto(Long categoryId) {
-        CreateBookRequestDto createBookDto = new CreateBookRequestDto();
-        createBookDto.setTitle("Kobzar");
-        createBookDto.setAuthor("Taras Shevchenko");
-        createBookDto.setIsbn("1234567890");
-        createBookDto.setPrice(BigDecimal.valueOf(123.45));
-        createBookDto.setDescription("Good book");
-        createBookDto.setCoverImage("Kobzar");
-        createBookDto.setCategories(List.of(categoryId));
-        return createBookDto;
-    }
-
-    private BookSearchParametersDto createBookSearchParametersDto() {
-        return new BookSearchParametersDto(
-                new String[1],
-                new String[1],
-                new String[1]
-        );
-    }
-
-    private Book mapCreateBookToBook(CreateBookRequestDto createBookDto, Long categoryId) {
-        Book book = new Book();
-        book.setId(1L);
-        book.setTitle(createBookDto.getTitle());
-        book.setAuthor(createBookDto.getAuthor());
-        book.setIsbn(createBookDto.getIsbn());
-        book.setPrice(createBookDto.getPrice());
-        book.setDescription(createBookDto.getDescription());
-        book.setCoverImage(createBookDto.getCoverImage());
-        book.setCategories(Set.of(new Category(categoryId)));
-        return book;
-    }
-
-    private BookDto mapBookToBookDto(Book book) {
-        BookDto bookDto = new BookDto();
-        bookDto.setId(book.getId());
-        bookDto.setTitle(book.getTitle());
-        bookDto.setAuthor(book.getAuthor());
-        bookDto.setIsbn(book.getIsbn());
-        bookDto.setPrice(book.getPrice());
-        bookDto.setDescription(book.getDescription());
-        bookDto.setCoverImage(book.getCoverImage());
-        bookDto.setCategoriesIds(List.of(1L));
-        return bookDto;
+        assertEquals(1, actual.size());
+        assertEquals(expected, actual.get(0));
     }
 }
