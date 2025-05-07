@@ -41,6 +41,7 @@ public class BookController {
         return bookService.findBookById(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Save a book", description = "Save a new book")
