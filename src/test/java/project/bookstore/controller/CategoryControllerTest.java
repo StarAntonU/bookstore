@@ -63,8 +63,8 @@ public class CategoryControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void save_ValidCategoryDto_ReturnCategoryDto() throws Exception {
         CreateCategoryRequestDto categoryRequestDto = createCategoryRequestDto();
-        CategoryDto expected = createCategoryDto();
         String jsonResult = objectMapper.writeValueAsString(categoryRequestDto);
+
         MvcResult result = mockMvc.perform(
                         post("/categories")
                                 .content(jsonResult)
@@ -72,8 +72,10 @@ public class CategoryControllerTest {
                 )
                 .andExpect(status().isCreated())
                 .andReturn();
+
         CategoryDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
+        CategoryDto expected = createCategoryDto();
         assertTrue(reflectionEquals(expected, actual, "id"));
     }
 
@@ -82,6 +84,7 @@ public class CategoryControllerTest {
     @DisplayName("Verify method save with invalid data")
     public void save_InvalidData_ReturnStatus() throws Exception {
         CreateCategoryRequestDto category = createCategoryRequestDtoInvalidData();
+
         String jsonResult = objectMapper.writeValueAsString(category);
         mockMvc.perform(
                 post("/categories")
@@ -103,10 +106,10 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+
         JsonNode root = objectMapper.readTree(result.getResponse().getContentAsString());
         List<CategoryDto> actual = objectMapper.readValue(root.get("content").toString(),
-                new TypeReference<>() {
-                });
+                new TypeReference<>() {});
         PageImpl<CategoryDto> page = createPageImpl();
         List<CategoryDto> expected = page.get().toList();
         assertEquals(expected, actual);
@@ -130,14 +133,15 @@ public class CategoryControllerTest {
     @Sql(scripts = "classpath:db/category/delete-categories-from-categories-table.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getCategoryById_ValidCategoryId_ReturnCategoryDto() throws Exception {
-        CategoryDto expected = createUpdateCategory();
         MvcResult result = mockMvc.perform(
                         get("/categories/2")
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+
         CategoryDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
+        CategoryDto expected = createUpdateCategory();
         assertEquals(expected, actual);
     }
 
@@ -172,6 +176,7 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
                 .andReturn();
+
         JsonNode root = objectMapper.readTree(result.getResponse().getContentAsString());
         List<CategoryDto> actual = objectMapper.readValue(root.get("content").toString(),
                 new TypeReference<>() {
@@ -207,12 +212,14 @@ public class CategoryControllerTest {
     public void updateCategory_ValidData_ReturnCategoryDto() throws Exception {
         CreateCategoryRequestDto updateDto = createCategoryRequestDto();
         String jsonResult = objectMapper.writeValueAsString(updateDto);
+
         MvcResult result = mockMvc.perform(
                         put("/categories/2")
                                 .content(jsonResult)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+
         CategoryDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
         CategoryDto expected = createCategoryDto();
@@ -228,6 +235,7 @@ public class CategoryControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateCategory_InvalidData_ReturnStatus() throws Exception {
         CreateCategoryRequestDto invalidCategoryDto = createInvalidCategoryDto();
+
         String jsonResult = objectMapper.writeValueAsString(invalidCategoryDto);
         mockMvc.perform(
                         put("/categories/1")
@@ -245,6 +253,7 @@ public class CategoryControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateCategory_InvalidUrl_ReturnStatus() throws Exception {
         CreateCategoryRequestDto categoryDto = createCategoryRequestDto();
+
         String jsonResult = objectMapper.writeValueAsString(categoryDto);
         mockMvc.perform(
                         put("/categories/12")
@@ -270,6 +279,7 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+
         BookDtoWithoutCategoryIds[] actual = objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(), BookDtoWithoutCategoryIds[].class);
         BookDtoWithoutCategoryIds[] expected = createArrayBookDtos();
@@ -295,6 +305,7 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+
         CategoryDto[] actual = objectMapper.readValue(result.getResponse().getContentAsByteArray(),
                 CategoryDto[].class);
         CategoryDto[] expected = new CategoryDto[0];

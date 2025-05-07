@@ -56,9 +56,11 @@ public class BookServiceTest {
         Long bookId = 1L;
         Book book = createBook(bookId);
         BookDto expected = mapBookToBookDto(book);
+
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(bookMapper.toDto(book)).thenReturn(expected);
         BookDto actual = bookService.findBookById(bookId);
+
         assertEquals(expected, actual);
     }
 
@@ -69,11 +71,13 @@ public class BookServiceTest {
             """)
     public void findBookById_IncorrectBookId_ReturnException() {
         long bookId = 1000L;
-        String expected = "Can`t find book by id " + bookId;
+
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.findBookById(bookId)
         );
+
+        String expected = "Can`t find book by id " + bookId;
         assertEquals(expected, actual.getMessage());
     }
 
@@ -84,11 +88,13 @@ public class BookServiceTest {
         CreateBookRequestDto createBookDto = createBookRequestDto(categoryId);
         Book book = mapCreateBookToBook(createBookDto, categoryId);
         BookDto expected = mapBookToBookDto(book);
+
         when(categoryRepository.existsById(categoryId)).thenReturn(true);
         when(bookMapper.toModel(createBookDto)).thenReturn(book);
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toDto(book)).thenReturn(expected);
         BookDto actual = bookService.save(createBookDto);
+
         assertEquals(expected, actual);
     }
 
@@ -99,11 +105,13 @@ public class BookServiceTest {
             """)
     public void save_IncorrectCategory_ReturnException() {
         long categoryId = 100L;
-        String expected = "There categories are not exist " + List.of(categoryId);
         CreateBookRequestDto createBookDto = createBookRequestDto(categoryId);
+
         when(categoryRepository.existsById(categoryId)).thenReturn(false);
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.save(createBookDto));
+
+        String expected = "There categories are not exist " + List.of(categoryId);
         assertEquals(expected, actual.getMessage());
     }
 
@@ -115,9 +123,11 @@ public class BookServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<Book> books = List.of(book);
         PageImpl<Book> bookPage = new PageImpl<>(books, pageable, books.size());
+
         when(bookRepository.findAll(pageable)).thenReturn(bookPage);
         when(bookMapper.toDto(book)).thenReturn(expected);
         List<BookDto> actual = bookService.findAll(pageable);
+
         assertEquals(1, actual.size());
         assertEquals(expected, actual.get(0));
     }
@@ -129,10 +139,12 @@ public class BookServiceTest {
         CreateBookRequestDto createBookDto = createBookRequestDto(id);
         Book book = mapCreateBookToBook(createBookDto, id);
         BookDto expected = mapBookToBookDto(book);
+
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toDto(book)).thenReturn(expected);
         BookDto actual = bookService.update(id, createBookDto);
+
         assertEquals(expected, actual);
     }
 
@@ -143,11 +155,13 @@ public class BookServiceTest {
             """)
     public void update_IncorrectBookId_ReturnException() {
         long id = 100L;
-        String expected = "Can`t update book by id " + id;
         CreateBookRequestDto createBookDto = createBookRequestDto(id);
+
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.update(id, createBookDto));
+
+        String expected = "Can`t update book by id " + id;
         assertEquals(expected, actual.getMessage());
     }
 
@@ -155,8 +169,10 @@ public class BookServiceTest {
     @DisplayName("Verify method deleteById with correct data")
     public void deleteById_CorrectDta_NoReturn() {
         long id = 1L;
+
         when(bookRepository.existsById(id)).thenReturn(true);
         bookService.deleteById(id);
+
         verify(bookRepository, times(1)).deleteById(id);
     }
 
@@ -167,10 +183,12 @@ public class BookServiceTest {
             """)
     public void deleteById_IncorrectData_ReturnException() {
         long id = 1L;
-        String expected = "Can`t delete book by id " + id;
+
         when(bookRepository.existsById(id)).thenReturn(false);
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> bookService.deleteById(id));
+
+        String expected = "Can`t delete book by id " + id;
         assertEquals(expected, actual.getMessage());
     }
 
@@ -181,10 +199,12 @@ public class BookServiceTest {
         specification = mock(Specification.class);
         Book book = createBook(1L);
         BookDto expected = mapBookToBookDto(book);
+
         when(bookSpecificationBuilder.build(params)).thenReturn(specification);
         when(bookRepository.findAll(specification)).thenReturn(List.of(book));
         when(bookMapper.toDto(book)).thenReturn(expected);
         List<BookDto> actual = bookService.search(params);
+
         assertEquals(1, actual.size());
         assertEquals(expected, actual.get(0));
     }

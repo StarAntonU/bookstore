@@ -50,10 +50,12 @@ public class CategoryServiceTest {
         CreateCategoryRequestDto categoryRequestDto = createCategoryRequestDto();
         Category category = mapCreateCategoryRequestDtoToCategory(categoryRequestDto);
         CategoryDto expected = mapCategoryToCategoryDto(category);
+
         when(categoryMapper.toModel(categoryRequestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(expected);
         CategoryDto actual = categoryService.save(categoryRequestDto);
+
         assertEquals(expected, actual);
     }
 
@@ -65,10 +67,12 @@ public class CategoryServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<Category> categories = List.of(category);
         PageImpl<Category> categoryPage = new PageImpl<>(categories, pageable, categories.size());
+
         when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
         when(categoryMapper.toDto(category)).thenReturn(expected);
         Page<CategoryDto> pages = categoryService.findAll(pageable);
         List<CategoryDto> actual = pages.get().toList();
+
         assertEquals(1, actual.size());
         assertEquals(expected, actual.get(0));
     }
@@ -78,9 +82,11 @@ public class CategoryServiceTest {
     public void findCategoryById_CorrectData_ReturnValidCategoryDto() {
         Category category = creaateCategory();
         CategoryDto expected = mapCategoryToCategoryDto(category);
+
         when(categoryRepository.findById(category.getId())).thenReturn(Optional.of(category));
         when(categoryMapper.toDto(category)).thenReturn(expected);
         CategoryDto actual = categoryService.findCategoryById(category.getId());
+
         assertEquals(expected, actual);
     }
 
@@ -91,11 +97,13 @@ public class CategoryServiceTest {
             """)
     public void findCategoryById_IncorrectData_ReturnException() {
         Category category = creaateCategory();
-        String expected = "Can`t find category by id " + category.getId();
+
         when(categoryRepository.findById(category.getId())).thenReturn(Optional.empty());
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> categoryService.findCategoryById(category.getId())
         );
+
+        String expected = "Can`t find category by id " + category.getId();
         assertEquals(expected, actual.getMessage());
     }
 
@@ -105,10 +113,12 @@ public class CategoryServiceTest {
         CreateCategoryRequestDto createCategoryDto = createCategoryRequestDto();
         Category category = mapCreateCategoryRequestDtoToCategory(createCategoryDto);
         CategoryDto expected = mapCategoryToCategoryDto(category);
+
         when(categoryRepository.findById(category.getId())).thenReturn(Optional.of(category));
         when(categoryRepository.save(category)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(expected);
         CategoryDto actual = categoryService.update(category.getId(), createCategoryDto);
+
         assertEquals(expected, actual);
     }
 
@@ -120,11 +130,13 @@ public class CategoryServiceTest {
     public void update_IncorrectData_ReturnException() {
         long id = 1L;
         CreateCategoryRequestDto createCategoryDto = createCategoryRequestDto();
-        String expected = "Can`t find category by id " + id;
+
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> categoryService.update(id, createCategoryDto)
         );
+
+        String expected = "Can`t find category by id " + id;
         assertEquals(expected, actual.getMessage());
     }
 
@@ -132,8 +144,10 @@ public class CategoryServiceTest {
     @DisplayName("Verify method deleteById with correct data")
     public void deleteById_CorrectData_NoReturn() {
         long id = 1L;
+
         when(categoryRepository.existsById(id)).thenReturn(true);
         categoryService.deleteById(id);
+
         verify(categoryRepository, times(1)).deleteById(id);
     }
 
@@ -144,10 +158,11 @@ public class CategoryServiceTest {
             """)
     public void deleteById_IncorrectData_ReturnException() {
         long id = 1L;
-        String expected = "Can`t delete category by id " + id;
         when(categoryRepository.existsById(id)).thenReturn(false);
         Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> categoryService.deleteById(id));
+
+        String expected = "Can`t delete category by id " + id;
         assertEquals(expected, actual.getMessage());
     }
 
@@ -156,8 +171,10 @@ public class CategoryServiceTest {
     public void getBooksByCategoryId_CorrectData_ReturnValidCategoryDto() {
         long id = 1L;
         BookDtoWithoutCategoryIds expected = createBookDtoWithoutCategoryIds(id);
+
         when(bookRepository.findByCategoriesId(id)).thenReturn(List.of(expected));
         List<BookDtoWithoutCategoryIds> actual = categoryService.getBooksByCategoryId(id);
+
         assertEquals(1, actual.size());
         assertEquals(expected, actual.get(0));
     }

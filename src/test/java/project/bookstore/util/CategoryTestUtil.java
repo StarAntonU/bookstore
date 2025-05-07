@@ -5,13 +5,11 @@ import java.util.List;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
 import project.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import project.bookstore.dto.category.CategoryDto;
 import project.bookstore.dto.category.CreateCategoryRequestDto;
 import project.bookstore.model.Category;
 
-@Component
 public class CategoryTestUtil {
     public static CreateCategoryRequestDto createInvalidCategoryDto() {
         return new CreateCategoryRequestDto(

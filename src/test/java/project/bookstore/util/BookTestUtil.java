@@ -3,14 +3,12 @@ package project.bookstore.util;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
-import org.springframework.stereotype.Component;
 import project.bookstore.dto.book.BookDto;
 import project.bookstore.dto.book.BookSearchParametersDto;
 import project.bookstore.dto.book.CreateBookRequestDto;
 import project.bookstore.model.Book;
 import project.bookstore.model.Category;
 
-@Component
 public class BookTestUtil {
     public static CreateBookRequestDto createBookRequestDto(Long categoryId) {
         CreateBookRequestDto createBookDto = new CreateBookRequestDto();
