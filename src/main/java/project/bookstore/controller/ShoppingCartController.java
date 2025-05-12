@@ -27,6 +27,7 @@ import project.bookstore.service.ShoppingCartService;
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "add item", description = "add the item to shopping cart")
     @PostMapping
     public ShoppingCartDto add(@RequestBody @Valid CreateCartItemRequestDto requestDto,
