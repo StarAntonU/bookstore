@@ -9,17 +9,21 @@ It leverages modern backend technologies and tools to streamline development, te
 
 ---
 
-[▶️ Watch the demo video](https://www.loom.com/share/e67852eadf2c427c880753bec831e4f3)
-
+[▶️ Watch the demo video](https://www.loom.com/share/416b8cb9eac74251ab9b1ddfdf88abba?sid=2411dc86-78db-47ec-b383-afca70e21f86)
 
 ---
 
 ### Key Technologies
 
-- **Spring Boot** – Rapid application development with embedded server support and production-ready configurations.
-- **Spring Security** – Handles authentication and authorization with JWT integration.
-- **Spring Data JPA (Hibernate)** – Simplifies database interactions using object-relational mapping.
-- **MySQL** – Reliable and performant relational database for persistent data storage.
+- **Java 17** – Primary programming language used for backend development.
+- **Maven** – Dependency and build management tool for Java projects.
+- **Spring Boot 3.3.2** – Rapid application development with embedded server support and production-ready configurations.
+- **Spring Security 6.3.1** – Handles authentication and authorization with JWT integration.
+- **Spring Data JPA 3.3.2 (Hibernate 6.5.2.Final)** – Simplifies database interactions using object-relational mapping.
+- **MapStruct 1.5.5.Final** – Code generator for mapping DTOs and entities efficiently.
+- **Liquibase 4.27.0** – Version control for your database schema with automated change tracking.
+- **MySQL 8.0.33** – Reliable and performant relational database for persistent data storage.
+- **Lombok 1.18.34** – Reduces boilerplate code in Java (e.g., getters, setters, constructors) via annotations.
 - **Swagger (OpenAPI)** – Automatically generated and interactive API documentation.
 - **Postman** – API testing and validation tool.
 - **Docker** – Containerization for consistent deployment across environments.
@@ -50,34 +54,34 @@ The system is built on a RESTful architecture and includes the following main co
 
 - **POST: `/books`** - Create a new book (only for role ADMIN)
 - **GET: `/books`** - View list all available books
-- **GET: `/books/1`** - View a book with id 1
-- **PUT: `/books/1`** - Update a book with id 1 (only for role ADMIN)
-- **DELETE: `/books/1`** - Mark as deleted a book with id 1 (only for role ADMIN)
+- **GET: `/books/{id}`** - View a book by id
+- **PUT: `/books/{id}`** - Update a book by id (only for role ADMIN)
+- **DELETE: `/books/{id}`** - Mark as deleted a book by id (only for role ADMIN)
 - **GET: `/books/search`** - Filter books by: isbn, title, author
 
 **OrderController**
 
 - **POST: `/orders`** - Create a new order (only for role ADMIN)
 - **GET: `/orders`** - View list all available orders
-- **GET: `/orders/1`** - View an order with id 1
-- **GET: `/orders/1/items/2`** - View an item with id 2 in the order with id 1
-- **PATCH: `/orders/1`** - Change status order with id 1 (only for role ADMIN)
+- **GET: `/orders/{id}`** - View an order by id
+- **GET: `/orders/{orderId}/items/{itemId}`** - View an item by itemId in the order by orderId
+- **PATCH: `/orders/{id}`** - Change status order by id (only for role ADMIN)
 
 **CategoryController**
 
 - **POST: `/categories`** - Create a new category (only for role ADMIN)
 - **GET: `/categories`** - View list all available categories
-- **GET: `/categories/1`** - View a category with id 1
-- **PUT: `/categories/1`** - Update a category with id 1 (only for role ADMIN)
-- **DELETE: `/categories/1`** - Mark as deleted a category with id 1 (only for role ADMIN)
-- **GET: `/categories/1/books`** - View list of books with category id 1
+- **GET: `/categories/{id}`** - View a category by id
+- **PUT: `/categories/{id}`** - Update a category by id (only for role ADMIN)
+- **DELETE: `/categories/{id}`** - Mark as deleted a category by id (only for role ADMIN)
+- **GET: `/categories/{id}/books`** - View list of books by category id
 
 **ShoppingCartController**
 
 - **POST: `/cart`** - Add the item to shopping cart
 - **GET: `/cart`** - View all items in the shopping cart
-- **PUT: `/cart/items/1`** - Update the quantity item with id 1 in the shopping cart
-- **DELETE: `/cart/1`** - Delete the item with id 1 in shopping cart
+- **PUT: `/cart/items/{id}`** - Update the quantity item by id in the shopping cart
+- **DELETE: `/cart/{id}`** - Delete the item by id in shopping cart
 
 ---
 
@@ -85,6 +89,45 @@ The system is built on a RESTful architecture and includes the following main co
 
 ![scheme](scheme-book-store.png)
 
+---
+
+### How to Launch a Spring Boot Application with Maven
+
+- Before running the application, ensure the following tools are installed and available:
+- - Java (17 or compatible)
+```
+java -version
+```
+- - Maven (3.8+ recommended)
+```
+mvn -version
+```
+- - Docker
+```
+docker --version
+```
+- Open the Terminal
+- - Open a terminal or command prompt on your computer
+- Navigate to the Project Folder
+- - Use the cd command to move into the folder that contains your Spring Boot project (the folder with the pom.xml file):
+```
+cd path/to/your/project
+```
+*Example:*
+```
+cd ~/Documents/bookstore
+```
+- Run the Application Using Maven
+- - Use the following command to launch the Spring Boot application:
+```
+mvn spring-boot:run
+```
+- Verify the Application is Running
+- - If successful, you will see logs ending with something like:
+```
+Started BookstoreApplication in X.XXX seconds (process running for X.XXX)
+```
+- Now that Spring Boot application is running, you can use Postman (or any other REST client) to test its API endpoints.
 ---
 
 ### User Roles and API Usage
@@ -99,7 +142,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Method:* **POST** `http://localhost:8088/api/auth/login`
 
-*Body:*
+*Example body:*
 
 ```
 {
@@ -113,7 +156,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Method* **POST** `http://localhost:8088/api/categories`
 
-*Body:*
+*Example body:*
 
 ```
 {
@@ -126,7 +169,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Method* **POST** `http://localhost:8088/api/books`
 
-*Body*
+*Example body:*
 
 ```
 {
@@ -154,7 +197,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Method* **POST** `http://localhost:8088/api/auth/registration`
 
-*Body*
+*Example body:*
 
 ```
 {
@@ -171,7 +214,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Method* **POST** `http://localhost:8088/api/auth/login`
 
-*Body*
+*Example body:*
 
 ```
 {
@@ -185,7 +228,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Method* **POST** `http://localhost:8088/api/cart`
 
-*Body* 
+*Example body:* 
 ```
 {
 "bookId": 1,
@@ -203,7 +246,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Method* **PUT** `http://localhost:8088/api/cart//items/{book_id}`
 
-*Body*
+*Example body:*
 ```
 {
 "quantity": 3
@@ -214,7 +257,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Method* **POST** `http://localhost:8088/api/orders`
 
-*Body* 
+*Example body:* 
 ```
 {
 "shippingAddress": "12 Main St. Kyiv"
