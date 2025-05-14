@@ -1,4 +1,4 @@
-## 📘 Book Store Backend – Java Spring Boot Project
+## 📘 Book Store App
 
 Welcome to the Book Store Backend, a scalable and modular RESTful API built using Java and the Spring Boot framework.
 This project is designed to support a full-featured online bookstore, providing endpoints for managing users, books,
@@ -10,6 +10,12 @@ It leverages modern backend technologies and tools to streamline development, te
 ---
 
 [▶️ Watch the demo video](https://www.loom.com/share/416b8cb9eac74251ab9b1ddfdf88abba?sid=2411dc86-78db-47ec-b383-afca70e21f86)
+
+---
+
+You can also test this API yourself using Swagger by accessing the following link:
+
+[Link to Swagger: BookStore.](http://ec2-44-211-209-132.compute-1.amazonaws.com/api/swagger-ui/index.html#/)
 
 ---
 
@@ -91,25 +97,55 @@ The system is built on a RESTful architecture and includes the following main co
 
 ---
 
+###  Fork and Clone a Project on GitHub
+
+Forking creates a personal copy of someone else's repository under your GitHub account.
+
+- [Go to the GitHub page of the repository you want to fork](https://github.com/StarAntonU/bookstore)
+- Click the "Fork" button in the upper-right corner
+- Select your GitHub account (or organization) to create the fork
+
+  You now have your own copy of the project.
+
+Make sure you have Git installed on your machine
+
+- You can check by running:
+```
+git --version
+```
+
+Cloning downloads your forked project to your local machine so you can run or work on it.
+
+- On your forked repository page (on your GitHub account), click the "Code" button
+- Copy the URL under HTTPS or SSH
+- Open a terminal (or Git Bash) on your computer
+- Run the following command
+```
+git clone https://github.com/StarAntonU/bookstore.git
+```
+
+---
+
 ### How to Launch a Spring Boot Application with Maven
 
-- Before running the application, ensure the following tools are installed and available:
-- - Java (17 or compatible)
+Before running the application, ensure the following tools are installed and available:
+- Java (17 or compatible)
 ```
 java -version
 ```
-- - Maven (3.8+ recommended)
+- Maven (3.8+ recommended)
 ```
 mvn -version
 ```
-- - Docker
+- Docker
 ```
 docker --version
 ```
-- Open the Terminal
-- - Open a terminal or command prompt on your computer
-- Navigate to the Project Folder
-- - Use the cd command to move into the folder that contains your Spring Boot project (the folder with the pom.xml file):
+Open the Terminal
+- Open a terminal or command prompt on your computer
+
+Navigate to the Project Folder
+- Use the cd command to move into the folder that contains your Spring Boot project (the folder with the pom.xml file):
 ```
 cd path/to/your/project
 ```
@@ -117,24 +153,39 @@ cd path/to/your/project
 ```
 cd ~/Documents/bookstore
 ```
-- Run the Application Using Maven
-- - Use the following command to launch the Spring Boot application:
+
+Before running the project, create .env file in the root directory with the required credentials
+
+*Example:*
+```
+MYSQLDB_USER=your_data
+MYSQLDB_ROOT_PASSWORD=your_data
+MYSQLDB_DATABASE=your_data
+MYSQLDB_LOCAL_PORT=your_data
+MYSQLDB_DOCKER_PORT=your_data
+SPRING_LOCAL_PORT=your_data
+SPRING_DOCKER_PORT=your_data
+DEBUG_PORT=your_data
+JWT_EXPIRATION=your_data
+JWT_SECRET=your_data
+```
+
+Run the Application Using Maven
+- Use the following command to launch the Spring Boot application:
 ```
 mvn spring-boot:run
 ```
-- Verify the Application is Running
-- - If successful, you will see logs ending with something like:
+Verify the Application is Running
+- If successful, you will see logs ending with something like:
 ```
 Started BookstoreApplication in X.XXX seconds (process running for X.XXX)
 ```
-- Now that Spring Boot application is running, you can use Postman (or any other REST client) to test its API endpoints.
+Now that Spring Boot application is running, you can use Postman (or any other REST client) to test its API endpoints.
+
 ---
 
-### User Roles and API Usage
 
-This project supports two main roles: Admin and User. Each role has access to different endpoints and operations.
-
-#### Getting Started with API with Postman
+### Getting Started with API with Postman
 
 Make sure Postman is installed on your local machine before starting API testing.
 
@@ -192,8 +243,7 @@ Make sure Postman is installed on your local machine before starting API testing
 + Manage categories: create, update, delete, view
 + Manage orders: view all, update status
 
-
-+ To continue testing as a regular user, you need to register a new account.
+To continue testing as a regular user, you need to register a new account.
 
 *Method* **POST** `http://localhost:8088/api/auth/registration`
 
@@ -279,8 +329,44 @@ Make sure Postman is installed on your local machine before starting API testing
 
 ---
 
-You can also test this API using Swagger by accessing the following link:
+### All Postman collections:
 
-[Link to Swagger: BookStore.](http://ec2-44-211-209-132.compute-1.amazonaws.com/api/swagger-ui/index.html#/)
+**AuthenticationController**
+
+- **POST:** `http://localhost:8088/api/auth/registration` - Register new users (with role USER)
+- **POST:** `http://localhost:8088/api/auth/login` - Authenticate existing users with JWT
+
+**BookController**
+
+- **POST:** `http://localhost:8088/api/books` - Create a new book (only for role ADMIN)
+- **GET:** `http://localhost:8088/api/books` - View list all available books
+- **GET:** `http://localhost:8088/api/books/1` - View a book with id 1
+- **PUT:** `http://localhost:8088/api/books/1` - Update a book with id 1 (only for role ADMIN)
+- **DELETE:** `http://localhost:8088/api/books/1` - Mark as deleted a book with id 1 (only for role ADMIN)
+- **GET:** `http://localhost:8088/api/books/search` - Filter books by: isbn, title, author
+
+**OrderController**
+
+- **POST:** `http://localhost:8088/api/orders` - Create a new order (only for role ADMIN)
+- **GET:** `http://localhost:8088/api/orders` - View list all available orders
+- **GET:** `http://localhost:8088/api/orders/1` - View an order with id 1
+- **GET:** `http://localhost:8088/api/orders/1/items/2` - View an item with id 2 in the order with id 1
+- **PATCH:** `http://localhost:8088/api/orders/1` - Change status order with id 1 (only for role ADMIN)
+
+**CategoryController**
+
+- **POST:** `http://localhost:8088/api/categories` - Create a new category (only for role ADMIN)
+- **GET:** `http://localhost:8088/api/categories` - View list all available categories
+- **GET:** `http://localhost:8088/api/categories/1` - View a category with id 1
+- **PUT:** `http://localhost:8088/api/categories/1` - Update a category with id 1 (only for role ADMIN)
+- **DELETE:** `http://localhost:8088/api/categories/1` - Mark as deleted a category with id 1 (only for role ADMIN)
+- **GET:** `http://localhost:8088/api/categories/1/books` - View list of books with category id 1
+
+**ShoppingCartController**
+
+- **POST:** `http://localhost:8088/api/cart` - Add the item to shopping cart
+- **GET:** `http://localhost:8088/api/cart` - View all items in the shopping cart
+- **PUT:** `http://localhost:8088/api/cart/items/1` - Update the quantity item with id 1 in the shopping cart
+- **DELETE:** `http://localhost:8088/api/cart/1` - Delete the item with id 1 in shopping cart
 
 ---
