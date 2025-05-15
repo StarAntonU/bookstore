@@ -31,7 +31,7 @@ You can also test this API yourself using Swagger by accessing the following lin
 
 [Fork and Clone a Project on GitHub](#fork-and-clone-a-project-on-github)
 
-[How to Launch a Spring Boot Application with Maven](#how-to-launch-a-spring-boot-application-with-maven)
+[How to Launch a Spring Boot Application with Maven or Docker](#how-to-launch-a-spring-boot-application-with-maven-or-docker)
 
 [Getting Started with API with Postman](#getting-started-with-api-with-postman)
 
@@ -146,7 +146,7 @@ git clone https://github.com/StarAntonU/bookstore.git
 
 ---
 
-### How to Launch a Spring Boot Application with Maven
+### How to Launch a Spring Boot Application with Maven or Docker
 
 Before running the application, ensure the following tools are installed and available:
 - Java (17 or compatible)
@@ -200,6 +200,19 @@ Verify the Application is Running
 ```
 Started BookstoreApplication in X.XXX seconds (process running for X.XXX)
 ```
+
+**Or using Docker to run app**
+
+- Build Docker image
+```
+docker build -t bookstore-app:1.0 .
+```
+
+- Run the container
+```
+docker run -p 8088:8080 bookstore-app:1.0
+```
+
 Now that Spring Boot application is running, you can use Postman (or any other REST client) to test its API endpoints.
 
 ---
