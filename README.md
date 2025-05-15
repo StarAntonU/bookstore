@@ -19,6 +19,26 @@ You can also test this API yourself using Swagger by accessing the following lin
 
 ---
 
+### Table of contents
+
+[Key Technologies](#key-Technologies)
+
+[Architecture Overview](#architecture-overview)
+
+[Features & Functionalities](#features--functionalities)
+
+[Database Schema Relationship Diagram](#database-schema-relationship-diagram)
+
+[Fork and Clone a Project on GitHub](#fork-and-clone-a-project-on-github)
+
+[How to Launch a Spring Boot Application with Maven](#how-to-launch-a-spring-boot-application-with-maven)
+
+[Getting Started with API with Postman](#getting-started-with-api-with-postman)
+
+[All Postman collections](#all-postman-collections)
+
+---
+
 ### Key Technologies
 
 - **Java 17** – Primary programming language used for backend development.
@@ -195,7 +215,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Example body:*
 
-```
+```json
 {
 "email": "admin@email.com", 
 "password": "1234"
@@ -209,7 +229,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Example body:*
 
-```
+```json
 {
 "name": "Classic", 
 "description": "Good books"
@@ -222,7 +242,7 @@ Make sure Postman is installed on your local machine before starting API testing
 
 *Example body:*
 
-```
+```json
 {
 "title": "Kobzar",
 "author": "Shevchenko",
@@ -249,7 +269,7 @@ To continue testing as a regular user, you need to register a new account.
 
 *Example body:*
 
-```
+```json
 {
 "email": "bob.doe@example.com",
 "password": "12345",
@@ -266,7 +286,7 @@ To continue testing as a regular user, you need to register a new account.
 
 *Example body:*
 
-```
+```json
 {
 "email": "bob.doe@example.com",
 "password": "12345"
@@ -279,7 +299,7 @@ To continue testing as a regular user, you need to register a new account.
 *Method* **POST** `http://localhost:8088/api/cart`
 
 *Example body:* 
-```
+```json
 {
 "bookId": 1,
 "quantity": 1
@@ -297,7 +317,7 @@ To continue testing as a regular user, you need to register a new account.
 *Method* **PUT** `http://localhost:8088/api/cart//items/{book_id}`
 
 *Example body:*
-```
+```json
 {
 "quantity": 3
 }
@@ -308,7 +328,7 @@ To continue testing as a regular user, you need to register a new account.
 *Method* **POST** `http://localhost:8088/api/orders`
 
 *Example body:* 
-```
+```json
 {
 "shippingAddress": "12 Main St. Kyiv"
 }
@@ -329,44 +349,8 @@ To continue testing as a regular user, you need to register a new account.
 
 ---
 
-### All Postman collections:
+### All Postman collections
 
-**AuthenticationController**
-
-- **POST:** `http://localhost:8088/api/auth/registration` - Register new users (with role USER)
-- **POST:** `http://localhost:8088/api/auth/login` - Authenticate existing users with JWT
-
-**BookController**
-
-- **POST:** `http://localhost:8088/api/books` - Create a new book (only for role ADMIN)
-- **GET:** `http://localhost:8088/api/books` - View list all available books
-- **GET:** `http://localhost:8088/api/books/1` - View a book with id 1
-- **PUT:** `http://localhost:8088/api/books/1` - Update a book with id 1 (only for role ADMIN)
-- **DELETE:** `http://localhost:8088/api/books/1` - Mark as deleted a book with id 1 (only for role ADMIN)
-- **GET:** `http://localhost:8088/api/books/search` - Filter books by: isbn, title, author
-
-**OrderController**
-
-- **POST:** `http://localhost:8088/api/orders` - Create a new order (only for role ADMIN)
-- **GET:** `http://localhost:8088/api/orders` - View list all available orders
-- **GET:** `http://localhost:8088/api/orders/1` - View an order with id 1
-- **GET:** `http://localhost:8088/api/orders/1/items/2` - View an item with id 2 in the order with id 1
-- **PATCH:** `http://localhost:8088/api/orders/1` - Change status order with id 1 (only for role ADMIN)
-
-**CategoryController**
-
-- **POST:** `http://localhost:8088/api/categories` - Create a new category (only for role ADMIN)
-- **GET:** `http://localhost:8088/api/categories` - View list all available categories
-- **GET:** `http://localhost:8088/api/categories/1` - View a category with id 1
-- **PUT:** `http://localhost:8088/api/categories/1` - Update a category with id 1 (only for role ADMIN)
-- **DELETE:** `http://localhost:8088/api/categories/1` - Mark as deleted a category with id 1 (only for role ADMIN)
-- **GET:** `http://localhost:8088/api/categories/1/books` - View list of books with category id 1
-
-**ShoppingCartController**
-
-- **POST:** `http://localhost:8088/api/cart` - Add the item to shopping cart
-- **GET:** `http://localhost:8088/api/cart` - View all items in the shopping cart
-- **PUT:** `http://localhost:8088/api/cart/items/1` - Update the quantity item with id 1 in the shopping cart
-- **DELETE:** `http://localhost:8088/api/cart/1` - Delete the item with id 1 in shopping cart
+[Postman collections](BookStore.postman_collection.json)
 
 ---
