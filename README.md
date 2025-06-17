@@ -1,6 +1,6 @@
 ## 📘 Book Store App
 
-Welcome to the Book Store Backend, a scalable and modular RESTful API built using Java and the Spring Boot framework.
+Welcome to the Bookstore Backend, a scalable and modular RESTful API built using Java and the Spring Boot framework.
 This project is designed to support a full-featured online bookstore, providing endpoints for managing users, books,
 orders, and more, with robust security and documentation in place.
 
@@ -79,7 +79,7 @@ The system is built on a RESTful architecture and includes the following main co
 **BookController**
 
 - **POST: `/books`** - Create a new book (only for role ADMIN)
-- **GET: `/books`** - View list all available books
+- **GET: `/books`** - View all available books
 - **GET: `/books/{id}`** - View a book by id
 - **PUT: `/books/{id}`** - Update a book by id (only for role ADMIN)
 - **DELETE: `/books/{id}`** - Mark as deleted a book by id (only for role ADMIN)
@@ -88,7 +88,7 @@ The system is built on a RESTful architecture and includes the following main co
 **OrderController**
 
 - **POST: `/orders`** - Create a new order (only for role ADMIN)
-- **GET: `/orders`** - View list all available orders
+- **GET: `/orders`** - View all available orders
 - **GET: `/orders/{id}`** - View an order by id
 - **GET: `/orders/{orderId}/items/{itemId}`** - View an item by itemId in the order by orderId
 - **PATCH: `/orders/{id}`** - Change status order by id (only for role ADMIN)
@@ -96,7 +96,7 @@ The system is built on a RESTful architecture and includes the following main co
 **CategoryController**
 
 - **POST: `/categories`** - Create a new category (only for role ADMIN)
-- **GET: `/categories`** - View list all available categories
+- **GET: `/categories`** - View all available categories
 - **GET: `/categories/{id}`** - View a category by id
 - **PUT: `/categories/{id}`** - Update a category by id (only for role ADMIN)
 - **DELETE: `/categories/{id}`** - Mark as deleted a category by id (only for role ADMIN)
@@ -146,7 +146,7 @@ git clone https://github.com/StarAntonU/bookstore.git
 
 ---
 
-### How to Launch a Spring Boot Application with Maven or Docker
+### How to Launch a Spring Boot Application with Maven or Docker Compose
 
 Before running the application, ensure the following tools are installed and available:
 - Java (17 or compatible)
@@ -157,9 +157,10 @@ java -version
 ```
 mvn -version
 ```
-- Docker
+- Docker & Docker Compose
 ```
 docker --version
+docker compose version
 ```
 Open the Terminal
 - Open a terminal or command prompt on your computer
@@ -174,7 +175,7 @@ cd path/to/your/project
 cd ~/Documents/bookstore
 ```
 
-Before running the project, create .env file in the root directory with the required credentials
+Before running the project, create .env a file in the root directory with the required credentials
 
 *Example:*
 ```
@@ -201,28 +202,22 @@ Verify the Application is Running
 Started BookstoreApplication in X.XXX seconds (process running for X.XXX)
 ```
 
-**Or using Docker to run app**
+**Or Use Docker Compose to run app**
 
-- Build Docker image
+- Run the app with Docker Compose
 ```
-docker build -t bookstore-app:1.0 .
-```
-
-- Run the container
-```
-docker run -p 8088:8080 bookstore-app:1.0
+docker compose up --build
 ```
 
 Now that Spring Boot application is running, you can use Postman (or any other REST client) to test its API endpoints.
 
 ---
 
-
 ### Getting Started with API with Postman
 
 Make sure Postman is installed on your local machine before starting API testing.
 
-+ To get started, you must authenticate as an admin and obtain a JWT token.
++ To get started, you must authenticate as an admin and get a JWT token.
 
 *Method:* **POST** `http://localhost:8088/api/auth/login`
 
@@ -236,7 +231,7 @@ Make sure Postman is installed on your local machine before starting API testing
  ```
 
 + After you authenticate and get a JWT token, you can create a category.
-+ Don’t forget add your token in the Authorization header as a Bearer Token every time.
++ Remember to add your token in the Authorization header as a Bearer Token every time.
 
 *Method* **POST** `http://localhost:8088/api/categories`
 
@@ -274,7 +269,7 @@ Make sure Postman is installed on your local machine before starting API testing
 + Create, update, or delete books
 + Search books by parameters
 + Manage categories: create, update, delete, view
-+ Manage orders: view all, update status
++ Manage orders: view all update status
 
 To continue testing as a regular user, you need to register a new account.
 
@@ -293,7 +288,7 @@ To continue testing as a regular user, you need to register a new account.
 }
 ```
 
-+ After registering a new user, you need to log in to obtain a JWT token.
++ After registering a new user, you need to log in to get a JWT token.
 
 *Method* **POST** `http://localhost:8088/api/auth/login`
 
@@ -307,7 +302,7 @@ To continue testing as a regular user, you need to register a new account.
 ```
 
 + After getting the token, you can add a book to your shopping cart
-+ Just don’t forget to include the token in the Authorization header as a Bearer token every time.
++ Remember to include the token in the Authorization header as a Bearer token every time.
 
 *Method* **POST** `http://localhost:8088/api/cart`
 
@@ -327,7 +322,7 @@ To continue testing as a regular user, you need to register a new account.
 
 *Method* **DELETE** `http://localhost:8088/api/cart/{book_id}`
 
-*Method* **PUT** `http://localhost:8088/api/cart//items/{book_id}`
+*Method* **PUT** `http://localhost:8088/api/cart/items/{book_id}`
 
 *Example body:*
 ```json

@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: insert-admin-to-users_roles-table.yaml
+      id: insert-admin-to-users_roles-table
       author: Anton
       changes:
         - insert:

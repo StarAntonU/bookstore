@@ -1,6 +1,7 @@
 package project.bookstore.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,7 +14,6 @@ import static project.bookstore.util.BookTestUtil.mapCreateBookToBook;
 
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -73,7 +73,7 @@ public class BookServiceTest {
         long bookId = 1000L;
 
         when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
-        Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
+        Exception actual = assertThrows(EntityNotFoundException.class,
                 () -> bookService.findBookById(bookId)
         );
 
@@ -108,7 +108,7 @@ public class BookServiceTest {
         CreateBookRequestDto createBookDto = createBookRequestDto(categoryId);
 
         when(categoryRepository.existsById(categoryId)).thenReturn(false);
-        Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
+        Exception actual = assertThrows(EntityNotFoundException.class,
                 () -> bookService.save(createBookDto));
 
         String expected = "There categories are not exist " + List.of(categoryId);
@@ -158,7 +158,7 @@ public class BookServiceTest {
         CreateBookRequestDto createBookDto = createBookRequestDto(id);
 
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
-        Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
+        Exception actual = assertThrows(EntityNotFoundException.class,
                 () -> bookService.update(id, createBookDto));
 
         String expected = "Can`t update book by id " + id;
@@ -185,7 +185,7 @@ public class BookServiceTest {
         long id = 1L;
 
         when(bookRepository.existsById(id)).thenReturn(false);
-        Exception actual = Assertions.assertThrows(EntityNotFoundException.class,
+        Exception actual = assertThrows(EntityNotFoundException.class,
                 () -> bookService.deleteById(id));
 
         String expected = "Can`t delete book by id " + id;
