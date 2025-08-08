@@ -191,15 +191,15 @@ JWT_EXPIRATION=your_data
 JWT_SECRET=your_data
 ```
 
+- Create a .jar file
+```
+mvn clean package
+```
+
 Run the Application Using Maven
 - Use the following command to launch the Spring Boot application:
 ```
 mvn spring-boot:run
-```
-Verify the Application is Running
-- If successful, you will see logs ending with something like:
-```
-Started BookstoreApplication in X.XXX seconds (process running for X.XXX)
 ```
 
 **Or Use Docker Compose to run app**
@@ -209,7 +209,19 @@ Started BookstoreApplication in X.XXX seconds (process running for X.XXX)
 docker compose up --build
 ```
 
+Verify the Application is Running
+- If successful, you will see logs ending with something like:
+```
+Started BookstoreApplication in X.XXX seconds (process running for X.XXX)
+```
+
 Now that Spring Boot application is running, you can use Postman (or any other REST client) to test its API endpoints.
+
+You can also test this API yourself using Swagger by accessing the following link:
+
+```text
+http://localhost:SPRING_LOCAL_PORT/api/swagger-ui/index.html
+```
 
 ---
 
